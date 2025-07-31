@@ -1,11 +1,3994 @@
-<!-- Placeholder index file for LooPin dApp. Actual HTML and JavaScript code will be added here. -->
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>LooPin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LooPin - Piを循環させる革新プラットフォーム</title>
+    <meta name="description" content="Piネットワークの最新情報をリアルタイムで配信。信憑性投票やコメントでPiを獲得できる革新プラットフォーム">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="LooPin - Piを循環させる革新プラットフォーム">
+    <meta property="og:description" content="Piネットワークの最新情報をリアルタイムで配信">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://your-domain.com/og-image.jpg">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LooPin - Piを循環させる革新プラットフォーム">
+    <meta name="twitter:description" content="Piネットワークの最新情報をリアルタイムで配信">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+    
+    <!-- Pi SDK -->
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        /* カスタムCSS */
+        :root {
+            --loopin-primary: #FF6B6B;
+            --loopin-secondary: #4ECDC4;
+            --loopin-accent: #FFE66D;
+            --loopin-dark: #1A535C;
+            --loopin-light: #F7FFF7;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1A535C 0%, #0A2E36 100%);
+            color: var(--loopin-light);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .gradient-btn-primary {
+            background: linear-gradient(135deg, var(--loopin-primary) 0%, #FF5252 100%);
+        }
+
+        .gradient-btn-secondary {
+            background: linear-gradient(135deg, var(--loopin-secondary) 0%, #26A69A 100%);
+        }
+
+        .gradient-btn-accent {
+            background: linear-gradient(135deg, var(--loopin-accent) 0%, #FFD54F 100%);
+        }
+
+        .loopin-logo {
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--loopin-primary) 0%, var(--loopin-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .loopin-tabs {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .loopin-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .loopin-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            min-width: 80px;
+        }
+
+        .loopin-tab.active {
+            background: rgba(255, 107, 107, 0.2);
+            color: var(--loopin-primary);
+            font-weight: 600;
+        }
+
+        .loopin-tab i {
+            font-size: 1.25rem;
+        }
+
+        .loopin-balance {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .smooth-transition {
+            transition: all 0.3s ease;
+        }
+
+        .text-loopin-primary {
+            color: var(--loopin-primary);
+        }
+
+        .text-loopin-secondary {
+            color: var(--loopin-secondary);
+        }
+
+        .text-loopin-accent {
+            color: var(--loopin-accent);
+        }
+
+        .post-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .topic-tag {
+            transition: all 0.3s ease;
+        }
+
+        .topic-tag:hover {
+            transform: scale(1.05);
+        }
+
+        .category-tag {
+            transition: all 0.3s ease;
+        }
+
+        .category-tag:hover {
+            transform: scale(1.05);
+        }
+
+        .category-tag.update {
+            background: rgba(255, 107, 107, 0.2);
+        }
+
+        .category-tag.price {
+            background: rgba(78, 205, 196, 0.2);
+        }
+
+        .category-tag.partnership {
+            background: rgba(255, 230, 109, 0.2);
+        }
+
+        .category-tag.community {
+            background: rgba(106, 130, 251, 0.2);
+        }
+
+        .loopin-hero {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(78, 205, 196, 0.2) 100%);
+            padding: 3rem;
+            text-align: center;
+            border-radius: 1.5rem;
+        }
+
+        .loopin-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .credibility-meter {
+            width: 100%;
+            height: 0.75rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .credibility-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease;
+        }
+
+        .credibility-high {
+            background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+        }
+
+        .credibility-medium {
+            background: linear-gradient(90deg, #FFC107 0%, #FFEB3B 100%);
+        }
+
+        .credibility-low {
+            background: linear-gradient(90deg, #F44336 0%, #FF5252 100%);
+        }
+
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 0.25rem solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--loopin-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .pi-counter {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .dopamine-trigger {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dopamine-trigger::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #ff0080);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+            background-size: 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .dopamine-trigger:hover::before {
+            opacity: 0.7;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .loopin-pi-coin {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* チャット関連スタイル */
+        .chat-container {
+            height: calc(100vh - 200px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-sidebar {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 1rem;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+        .chat-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-sidebar::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .chat-input-container {
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-room-item {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .chat-room-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-room-item.active {
+            background: rgba(255, 107, 107, 0.2);
+        }
+
+        .chat-room-admin-controls {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .chat-room-admin-btn {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-room-admin-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .chat-message {
+            margin-bottom: 1rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-message-own {
+            text-align: right;
+        }
+
+        .chat-message-bubble {
+            display: inline-block;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            max-width: 70%;
+            text-align: left;
+        }
+
+        .chat-message-own .chat-message-bubble {
+            background: var(--loopin-primary);
+            color: white;
+        }
+
+        .chat-message-other .chat-message-bubble {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+        }
+
+        .chat-typing-indicator span {
+            height: 0.5rem;
+            width: 0.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            margin: 0 0.125rem;
+            animation: typing 1.4s infinite;
+        }
+
+        .chat-typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .chat-typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-0.5rem);
+            }
+        }
+
+        /* ショート動画スタイル */
+        .reel-container {
+            height: calc(100vh - 200px);
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .reel-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .reel-item {
+            height: 100vh;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .reel-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .reel-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            color: white;
+        }
+
+        .reel-actions {
+            position: absolute;
+            right: 1rem;
+            bottom: 8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .reel-action-btn {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reel-action-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .reel-action-btn.active {
+            color: var(--loopin-primary);
+        }
+
+        .reel-upload-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            background: var(--loopin-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 40;
+        }
+
+        .reel-upload-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(255, 107, 107, 0.6);
+        }
+
+        /* プロフィール編集スタイル */
+        .profile-edit-container {
+            max-width: 4xl;
+            margin: 0 auto;
+        }
+
+        .profile-avatar-upload {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1rem;
+        }
+
+        .profile-avatar-upload img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-avatar-upload .upload-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--loopin-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .profile-form-group input,
+        .profile-form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .profile-form-group input:focus,
+        .profile-form-group textarea:focus {
+            outline: none;
+            border-color: var(--loopin-primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+        }
+
+        .profile-form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* フォロー機能スタイル */
+        .follow-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .follow-btn.not-following {
+            background: var(--loopin-primary);
+            color: white;
+        }
+
+        .follow-btn.not-following:hover {
+            background: #FF5252;
+        }
+
+        .follow-btn.following {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .follow-btn.following:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .user-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-card img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-card-info {
+            flex: 1;
+        }
+
+        .user-card-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-card-info p {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* レスポンシブデザイン */
+        @media (max-width: 768px) {
+            .loopin-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .chat-container {
+                height: calc(100vh - 180px);
+            }
+            
+            .chat-sidebar {
+                width: 200px;
+            }
+        }
+    </style>
 </head>
-<body>
-    <h1>LooPin dApp Placeholder</h1>
-    <p>This file is a placeholder. Replace its contents with the full HTML/JS code from the project once ready.</p>
+<body class="text-gray-900">
+    <!-- 言語選択オーバーレイ -->
+    <div id="langOverlay" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+        <div class="glass-effect rounded-3xl p-8 max-w-md w-full">
+            <div class="text-center mb-6">
+                <h2 class="loopin-logo text-4xl mb-2">LooPin</h2>
+                <p class="text-white/80">Piを循環させる革新プラットフォーム</p>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-6 text-center">言語を選択</h3>
+            <div class="grid grid-cols-3 gap-3 max-h-96 overflow-y-auto">
+                <button onclick="selectLanguage('ja')" class="glass-effect rounded-xl p-3 text-white hover:bg-white/20 smooth-transition">
+                    🇯🇵 日本語
+                </button>
+                <button onclick="selectLanguage('en')" class="glass-effect rounded-xl p-3 text-white hover:bg-white/20 smooth-transition">
+                    🇺🇸 English
+                </button>
+                <button onclick="selectLanguage('zh')" class="glass-effect rounded-xl p-3 text-white hover:bg-white/20 smooth-transition">
+                    🇨🇳 中文
+                </button>
+                <button onclick="selectLanguage('ko')" class="glass-effect rounded-xl p-3 text-white hover:bg-white/20 smooth-transition">
+                    🇰🇷 한국어
+                </button>
+                <button onclick="selectLanguage('es')" class="glass-effect rounded-xl p-3 text-white hover:bg-white/20 smooth-transition">
+                    🇪🇸 Español
+                </button>
+                <button onclick="selectLanguage('fr')" class="glass-effect rounded-xl p-3 text-white hover:bg-white/20 smooth-transition">
+                    🇫🇷 Français
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pi認証オーバーレイ -->
+    <div id="authOverlay" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-effect rounded-3xl p-8 max-w-md w-full">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 gradient-btn-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-infinity text-white text-3xl"></i>
+                </div>
+                <h2 class="loopin-logo text-3xl mb-2">LooPin</h2>
+                <p class="text-white/80">Piアカウントでログイン</p>
+            </div>
+            
+            <div id="authContent">
+                <button onclick="authenticatePi()" class="w-full gradient-btn-primary text-white font-semibold py-4 rounded-2xl hover:shadow-lg smooth-transition mb-4">
+                    <i class="fas fa-wallet mr-2"></i>
+                    Piウォレットで認証
+                </button>
+                
+                <div class="text-center">
+                    <p class="text-white/60 text-sm">
+                        認証することで、
+                        <a href="#" class="text-loopin-primary hover:underline">利用規約</a>
+                        と
+                        <a href="#" class="text-loopin-primary hover:underline">プライバシーポリシー</a>
+                        に同意したことになります。
+                    </p>
+                </div>
+            </div>
+            
+            <div id="authLoading" class="hidden text-center">
+                <div class="spinner mx-auto mb-4"></div>
+                <p class="text-white/80">認証中...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- メインコンテナ -->
+    <div id="mainContainer" class="hidden">
+        <!-- ヘッダー -->
+        <header class="glass-effect sticky top-0 z-40 px-4 py-3">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 gradient-btn-primary rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-infinity text-white text-xl"></i>
+                    </div>
+                    <h1 class="loopin-logo text-2xl">LooPin</h1>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <!-- Pi残高表示 -->
+                    <div class="loopin-balance rounded-full px-4 py-2 flex items-center gap-2">
+                        <i class="fas fa-coins text-yellow-400"></i>
+                        <span class="text-white font-semibold pi-counter" id="piBalance">0.00</span>
+                        <span class="text-white/70 text-sm">testPi</span>
+                    </div>
+                    
+                    <!-- 言語切り替え -->
+                    <button onclick="toggleLangSelector()" class="glass-effect rounded-full p-2 text-white hover:bg-white/20">
+                        <i class="fas fa-globe"></i>
+                    </button>
+                    
+                    <!-- プロフィール -->
+                    <button onclick="showProfile()" class="w-10 h-10 rounded-full overflow-hidden border-2 border-white/30 hover:scale-110 smooth-transition">
+                        <img id="userAvatar" src="https://picsum.photos/seed/user/40/40.jpg" alt="Profile">
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- LooPinタブナビゲーション -->
+        <nav class="sticky top-16 z-30 px-4 py-3">
+            <div class="max-w-7xl mx-auto">
+                <div class="loopin-tabs">
+                    <button onclick="switchTab('feed')" class="loopin-tab active" data-tab="feed">
+                        <i class="fas fa-home"></i>
+                        <span>フィード</span>
+                    </button>
+                    <button onclick="switchTab('reels')" class="loopin-tab" data-tab="reels">
+                        <i class="fas fa-play-circle"></i>
+                        <span>ショート</span>
+                    </button>
+                    <button onclick="switchTab('topics')" class="loopin-tab" data-tab="topics">
+                        <i class="fas fa-hashtag"></i>
+                        <span>トピック</span>
+                    </button>
+                    <button onclick="switchTab('news')" class="loopin-tab" data-tab="news">
+                        <i class="fas fa-newspaper"></i>
+                        <span>ニュース</span>
+                    </button>
+                    <button onclick="switchTab('chat')" class="loopin-tab" data-tab="chat">
+                        <i class="fas fa-comments"></i>
+                        <span>チャット</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- フィードタブ -->
+        <div id="feedTab" class="tab-content max-w-7xl mx-auto p-4">
+            <!-- 投稿作成エリア -->
+            <div class="glass-effect rounded-3xl p-6 mb-6">
+                <div class="flex items-start gap-4">
+                    <img src="https://picsum.photos/seed/user/40/40.jpg" alt="User" class="w-12 h-12 rounded-full">
+                    <div class="flex-1">
+                        <textarea 
+                            id="postInput"
+                            placeholder="testPiを獲得するために投稿しよう... インプレッションやエンゲージメントでtestPiがもらえます！"
+                            class="w-full glass-effect rounded-2xl p-4 text-white placeholder-white/50 resize-none focus:outline-none focus:ring-2 focus:ring-loopin-primary"
+                            rows="3"
+                        ></textarea>
+                        <div class="flex items-center justify-between mt-4">
+                            <div class="flex gap-2">
+                                <button class="glass-effect rounded-xl p-2 text-white hover:bg-white/20">
+                                    <i class="fas fa-image"></i>
+                                </button>
+                                <button class="glass-effect rounded-xl p-2 text-white hover:bg-white/20">
+                                    <i class="fas fa-poll"></i>
+                                </button>
+                                <button class="glass-effect rounded-xl p-2 text-white hover:bg-white/20">
+                                    <i class="fas fa-gift"></i>
+                                </button>
+                            </div>
+                            <button onclick="createPost()" class="gradient-btn-primary text-white font-semibold px-6 py-2 rounded-xl hover:shadow-lg smooth-transition">
+                                投稿する
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- デイリーミッション -->
+            <div class="glass-effect rounded-3xl p-6 mb-6 dopamine-trigger">
+                <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-tasks text-yellow-400"></i>
+                    デイリーミッション
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="glass-effect rounded-2xl p-4 border border-yellow-400/30">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-white font-medium">3回投稿</span>
+                            <span class="text-yellow-400 font-bold">+5 testPi</span>
+                        </div>
+                        <div class="w-full bg-white/20 rounded-full h-2">
+                            <div class="bg-yellow-400 h-2 rounded-full" style="width: 33%"></div>
+                        </div>
+                    </div>
+                    <div class="glass-effect rounded-2xl p-4 border border-blue-400/30">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-white font-medium">10回いいね</span>
+                            <span class="text-blue-400 font-bold">+3 testPi</span>
+                        </div>
+                        <div class="w-full bg-white/20 rounded-full h-2">
+                            <div class="bg-blue-400 h-2 rounded-full" style="width: 70%"></div>
+                        </div>
+                    </div>
+                    <div class="glass-effect rounded-2xl p-4 border border-purple-400/30">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-white font-medium">5回コメント</span>
+                            <span class="text-purple-400 font-bold">+4 testPi</span>
+                        </div>
+                        <div class="w-full bg-white/20 rounded-full h-2">
+                            <div class="bg-purple-400 h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- フィード -->
+            <div class="space-y-4" id="feed">
+                <!-- 投稿カードサンプル -->
+                <div class="post-card glass-effect rounded-3xl p-6">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="https://picsum.photos/seed/user1/40/40.jpg" alt="User" class="w-10 h-10 rounded-full">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h4 class="font-semibold text-white">山田太郎</h4>
+                                <span class="text-xs text-white/60">2分前</span>
+                            </div>
+                            <p class="text-white/90 mb-4">LooPinで初めてtestPiを獲得しました！投稿するだけでいいなんて簡単すぎる！みんなもやってみてください！</p>
+                            
+                            <!-- エンゲージメントメトリクス -->
+                            <div class="flex items-center gap-6 text-white/70">
+                                <button onclick="likePost(this)" class="flex items-center gap-2 hover:text-red-400 smooth-transition">
+                                    <i class="far fa-heart"></i>
+                                    <span>42</span>
+                                </button>
+                                <button onclick="showComments()" class="flex items-center gap-2 hover:text-blue-400 smooth-transition">
+                                    <i class="far fa-comment"></i>
+                                    <span>8</span>
+                                </button>
+                                <button onclick="retweetPost(this)" class="flex items-center gap-2 hover:text-green-400 smooth-transition">
+                                    <i class="fas fa-retweet"></i>
+                                    <span>5</span>
+                                </button>
+                                <button class="flex items-center gap-2 hover:text-yellow-400 smooth-transition">
+                                    <i class="fas fa-coins text-yellow-400"></i>
+                                    <span>2.5 testPi</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 画像付き投稿 -->
+                <div class="post-card glass-effect rounded-3xl p-6">
+                    <div class="flex items-start gap-4 mb-4">
+                        <img src="https://picsum.photos/seed/user2/40/40.jpg" alt="User" class="w-10 h-10 rounded-full">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h4 class="font-semibold text-white">佐藤花子</h4>
+                                <span class="text-xs text-white/60">15分前</span>
+                            </div>
+                            <p class="text-white/90 mb-4">今日のPi価格は〇〇円だって！みんなどう思う？今後の値動き予想を教えて！</p>
+                            
+                            <!-- 画像 -->
+                            <div class="rounded-2xl overflow-hidden mb-4">
+                                <img src="https://picsum.photos/seed/pi-chart/600/400.jpg" alt="Chart" class="w-full">
+                            </div>
+                            
+                            <div class="flex items-center gap-6 text-white/70">
+                                <button onclick="likePost(this)" class="flex items-center gap-2 hover:text-red-400 smooth-transition">
+                                    <i class="far fa-heart"></i>
+                                    <span>128</span>
+                                </button>
+                                <button onclick="showComments()" class="flex items-center gap-2 hover:text-blue-400 smooth-transition">
+                                    <i class="far fa-comment"></i>
+                                    <span>34</span>
+                                </button>
+                                <button onclick="retweetPost(this)" class="flex items-center gap-2 hover:text-green-400 smooth-transition">
+                                    <i class="fas fa-retweet"></i>
+                                    <span>12</span>
+                                </button>
+                                <button class="flex items-center gap-2 hover:text-yellow-400 smooth-transition">
+                                    <i class="fas fa-coins text-yellow-400"></i>
+                                    <span>5.8 testPi</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ショートリールタブ -->
+        <div id="reelsTab" class="tab-content hidden">
+            <div class="reel-container" id="reelsContainer">
+                <!-- ショートリールコンテンツが動的に追加される -->
+            </div>
+            
+            <!-- 動画アップロードボタン -->
+            <button onclick="showReelUpload()" class="reel-upload-btn">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+        
+        <!-- トピックタブ -->
+        <div id="topicsTab" class="tab-content hidden max-w-7xl mx-auto p-4">
+            <!-- トレンドトピック -->
+            <div class="glass-effect rounded-3xl p-6 mb-6">
+                <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-fire text-orange-400"></i>
+                    トレンドトピック
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <button onclick="openTopicRoom('pi-price')" class="topic-tag glass-effect rounded-2xl p-4 text-left hover:bg-white/20">
+                        <h4 class="font-semibold text-white mb-1">#Pi価格</h4>
+                        <p class="text-sm text-white/60">1.2k 投稿</p>
+                    </button>
+                    <button onclick="openTopicRoom('mining')" class="topic-tag glass-effect rounded-2xl p-4 text-left hover:bg-white/20">
+                        <h4 class="font-semibold text-white mb-1">#マイニング</h4>
+                        <p class="text-sm text-white/60">856 投稿</p>
+                    </button>
+                    <button onclick="openTopicRoom('ecosystem')" class="topic-tag glass-effect rounded-2xl p-4 text-left hover:bg-white/20">
+                        <h4 class="font-semibold text-white mb-1">#エコシステム</h4>
+                        <p class="text-sm text-white/60">642 投稿</p>
+                    </button>
+                    <button onclick="openTopicRoom('future')" class="topic-tag glass-effect rounded-2xl p-4 text-left hover:bg-white/20">
+                        <h4 class="font-semibold text-white mb-1">#未来予測</h4>
+                        <p class="text-sm text-white/60">523 投稿</p>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- すべてのトピック -->
+            <div class="glass-effect rounded-3xl p-6">
+                <h3 class="text-xl font-bold text-white mb-4">すべてのトピック</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between glass-effect rounded-2xl p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-chart-line text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white">市場分析</h4>
+                                <p class="text-sm text-white/60">234 投稿 · 活発</p>
+                            </div>
+                        </div>
+                        <button onclick="openTopicRoom('market')" class="glass-effect rounded-xl px-4 py-2 text-white hover:bg-white/20">
+                            参加
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between glass-effect rounded-2xl p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-lightbulb text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white">アイデア交換</h4>
+                                <p class="text-sm text-white/60">189 投稿</p>
+                            </div>
+                        </div>
+                        <button onclick="openTopicRoom('ideas')" class="glass-effect rounded-xl px-4 py-2 text-white hover:bg-white/20">
+                            参加
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ニュースタブ -->
+        <div id="newsTab" class="tab-content hidden max-w-7xl mx-auto p-4">
+            <!-- LooPinヒーローセクション -->
+            <div class="loopin-hero glass-effect rounded-3xl mb-8">
+                <h1 class="loopin-logo">LooPin News</h1>
+                <p class="text-xl">Piネットワークの最新情報をリアルタイムで配信</p>
+                <div class="text-sm text-white/60">
+                    <i class="fas fa-sync-alt mr-1"></i>
+                    最終更新: <span id="lastUpdate">--:--</span>
+                </div>
+            </div>
+            
+            <!-- 検索バー -->
+            <div class="glass-effect rounded-2xl p-4 mb-6">
+                <div class="flex gap-3">
+                    <div class="flex-1 relative">
+                        <input 
+                            type="text" 
+                            id="newsSearch"
+                            placeholder="ニュースを検索..."
+                            class="w-full glass-effect rounded-2xl px-4 py-3 pl-12 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-loopin-primary"
+                        >
+                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60"></i>
+                    </div>
+                    <button onclick="searchNews()" class="gradient-btn-primary text-white font-semibold px-6 py-3 rounded-xl hover:shadow-lg smooth-transition">
+                        検索
+                    </button>
+                </div>
+            </div>
+            
+            <!-- カテゴリーフィルター -->
+            <div class="glass-effect rounded-2xl p-4 mb-6">
+                <div class="flex gap-2 overflow-x-auto pb-2">
+                    <button onclick="filterNews('all')" class="category-tag rounded-full px-4 py-2 text-white text-sm whitespace-nowrap bg-white/20">
+                        すべて
+                    </button>
+                    <button onclick="filterNews('update')" class="category-tag update rounded-full px-4 py-2 text-white text-sm whitespace-nowrap">
+                        <i class="fas fa-sync mr-1"></i>アップデート
+                    </button>
+                    <button onclick="filterNews('price')" class="category-tag price rounded-full px-4 py-2 text-white text-sm whitespace-nowrap">
+                        <i class="fas fa-chart-line mr-1"></i>価格
+                    </button>
+                    <button onclick="filterNews('partnership')" class="category-tag partnership rounded-full px-4 py-2 text-white text-sm whitespace-nowrap">
+                        <i class="fas fa-handshake mr-1"></i>提携
+                    </button>
+                    <button onclick="filterNews('community')" class="category-tag community rounded-full px-4 py-2 text-white text-sm whitespace-nowrap">
+                        <i class="fas fa-users mr-1"></i>コミュニティ
+                    </button>
+                </div>
+            </div>
+            
+            <!-- ソースフィルター -->
+            <div class="glass-effect rounded-2xl p-4 mb-6">
+                <h3 class="text-lg font-semibold text-white mb-3">ニュースソース</h3>
+                <div class="flex gap-2 flex-wrap">
+                    <button onclick="filterBySource('all')" class="category-tag rounded-full px-3 py-1 text-xs text-white whitespace-nowrap bg-white/20">
+                        すべて
+                    </button>
+                    <button onclick="filterBySource('Twitter')" class="category-tag rounded-full px-3 py-1 text-xs text-white whitespace-nowrap">
+                        <i class="fab fa-twitter mr-1"></i>Twitter
+                    </button>
+                    <button onclick="filterBySource('cryptonews.com')" class="category-tag rounded-full px-3 py-1 text-xs text-white whitespace-nowrap">
+                        CryptoNews
+                    </button>
+                    <button onclick="filterBySource('cointelegraph.com')" class="category-tag rounded-full px-3 py-1 text-xs text-white whitespace-nowrap">
+                        Cointelegraph
+                    </button>
+                </div>
+            </div>
+            
+            <!-- トレンドニュース -->
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                    <i class="fas fa-fire text-orange-400"></i>
+                    🔥 トレンドニュース
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="trendingNews">
+                    <!-- トレンドニュースが動的に追加される -->
+                </div>
+            </div>
+            
+            <!-- 最新ニュースリスト -->
+            <div class="space-y-4" id="newsList">
+                <!-- ニュースアイテムが動的に追加される -->
+            </div>
+        </div>
+        
+        <!-- チャットタブ -->
+        <div id="chatTab" class="tab-content hidden max-w-7xl mx-auto p-4">
+            <div class="chat-container">
+                <div class="flex gap-4 h-full">
+                    <!-- チャットサイドバー -->
+                    <div class="chat-sidebar">
+                        <div class="p-4">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-bold text-white">チャットルーム</h3>
+                                <button onclick="showAddChatRoom()" class="glass-effect rounded-full p-2 text-white hover:bg-white/20">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <div class="space-y-2" id="chatRooms">
+                                <!-- チャットルームが動的に追加される -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- チャットメイン -->
+                    <div class="chat-main">
+                        <div class="chat-header">
+                            <h3 class="text-xl font-bold text-white" id="chatRoomTitle">一般</h3>
+                            <p class="text-sm text-white/60" id="chatRoomDescription">全般チャット</p>
+                        </div>
+                        
+                        <div class="chat-messages" id="chatMessages">
+                            <!-- チャットメッセージが動的に追加される -->
+                        </div>
+                        
+                        <div class="chat-input-container">
+                            <div class="flex gap-3">
+                                <input 
+                                    type="text" 
+                                    id="chatInput"
+                                    placeholder="メッセージを入力..."
+                                    class="flex-1 glass-effect rounded-2xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-loopin-primary"
+                                    onkeypress="if(event.key === 'Enter') sendChatMessage()"
+                                >
+                                <button onclick="sendChatMessage()" class="gradient-btn-primary text-white font-semibold px-6 py-3 rounded-xl hover:shadow-lg smooth-transition">
+                                    送信
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- トピックルーム（モーダル） -->
+        <div id="topicRoomModal" class="fixed inset-0 bg-black/50 z-50 hidden">
+            <div class="h-full flex flex-col">
+                <div class="topic-room-header glass-effect px-4 py-3">
+                    <div class="max-w-4xl mx-auto flex items-center justify-between">
+                        <button onclick="closeTopicRoom()" class="glass-effect rounded-full p-2 text-white hover:bg-white/20">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <h3 class="text-xl font-bold text-white" id="topicRoomTitle">トピックルーム</h3>
+                        <div class="flex items-center gap-2">
+                            <span class="text-white/70 text-sm">参加者:</span>
+                            <span class="text-white font-semibold" id="topicRoomMembers">1,234</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div class="max-w-4xl mx-auto space-y-4" id="topicRoomPosts">
+                        <!-- トピック投稿が動的に追加される -->
+                    </div>
+                </div>
+                
+                <div class="glass-effect p-4">
+                    <div class="max-w-4xl mx-auto flex gap-3">
+                        <input 
+                            type="text" 
+                            id="topicRoomInput"
+                            placeholder="このトピックについて投稿..."
+                            class="flex-1 glass-effect rounded-2xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        >
+                        <button onclick="postToTopic()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold px-6 py-3 rounded-xl hover:shadow-lg smooth-transition">
+                            投稿
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- プロフィールモーダル -->
+        <div id="profileModal" class="fixed inset-0 bg-black/50 z-50 hidden">
+            <div class="h-full flex flex-col">
+                <div class="glass-effect px-4 py-3">
+                    <div class="max-w-4xl mx-auto flex items-center justify-between">
+                        <button onclick="closeProfile()" class="glass-effect rounded-full p-2 text-white hover:bg-white/20">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <h3 class="text-xl font-bold text-white">プロフィール</h3>
+                        <button onclick="showProfileEdit()" class="glass-effect rounded-full p-2 text-white hover:bg-white/20">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div class="max-w-4xl mx-auto">
+                        <!-- プロフィールヘッダー -->
+                        <div class="glass-effect rounded-3xl p-8 mb-6 text-center">
+                            <img id="profileAvatar" src="https://picsum.photos/seed/user/120/120.jpg" alt="Profile" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white/30">
+                            <h2 id="profileName" class="text-2xl font-bold text-white mb-2">あなたの名前</h2>
+                            <p id="profileUsername" class="text-white/70 mb-4">@yourusername</p>
+                            <p id="profileBio" class="text-white/80 mb-6 max-w-md mx-auto">自己紹介文がここに表示されます</p>
+                            
+                            <div class="flex justify-center gap-8 mb-6">
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold text-white" id="profilePostsCount">0</p>
+                                    <p class="text-white/60 text-sm">投稿</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold text-white" id="profileFollowingCount">0</p>
+                                    <p class="text-white/60 text-sm">フォロー</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold text-white" id="profileFollowersCount">0</p>
+                                    <p class="text-white/60 text-sm">フォロワー</p>
+                                </div>
+                            </div>
+                            
+                            <div class="glass-effect rounded-2xl p-4 inline-block">
+                                <p class="text-white/70 text-sm">総獲得testPi</p>
+                                <p class="text-2xl font-bold text-yellow-400"><span id="profileTotalPi">0.00</span> testPi</p>
+                            </div>
+                        </div>
+                        
+                        <!-- タブナビゲーション -->
+                        <div class="flex gap-1 mb-6">
+                            <button onclick="switchProfileTab('posts')" class="profile-tab active flex-1 text-center py-3 font-medium" data-profile-tab="posts">
+                                投稿
+                            </button>
+                            <button onclick="switchProfileTab('following')" class="profile-tab flex-1 text-center py-3 font-medium" data-profile-tab="following">
+                                フォロー
+                            </button>
+                            <button onclick="switchProfileTab('followers')" class="profile-tab flex-1 text-center py-3 font-medium" data-profile-tab="followers">
+                                フォロワー
+                            </button>
+                        </div>
+                        
+                        <!-- プロフィールコンテンツ -->
+                        <div id="profileContent" class="space-y-4">
+                            <!-- 動的にコンテンツが表示される -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- プロフィール編集モーダル -->
+        <div id="profileEditModal" class="fixed inset-0 bg-black/80 z-50 hidden">
+            <div class="h-full flex flex-col">
+                <div class="glass-effect px-4 py-3">
+                    <div class="max-w-4xl mx-auto flex items-center justify-between">
+                        <button onclick="closeProfileEdit()" class="glass-effect rounded-full p-2 text-white hover:bg-white/20">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <h3 class="text-xl font-bold text-white">プロフィール編集</h3>
+                        <button onclick="saveProfileEdit()" class="gradient-btn-primary text-white font-semibold px-4 py-2 rounded-xl hover:shadow-lg smooth-transition">
+                            保存
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div class="max-w-4xl mx-auto profile-edit-container">
+                        <div class="glass-effect rounded-3xl p-8">
+                            <!-- アバターアップロード -->
+                            <div class="profile-avatar-upload">
+                                <img id="editProfileAvatar" src="https://picsum.photos/seed/user/120/120.jpg" alt="Profile">
+                                <div class="upload-btn" onclick="document.getElementById('avatarUpload').click()">
+                                    <i class="fas fa-camera text-white"></i>
+                                </div>
+                                <input type="file" id="avatarUpload" accept="image/*" style="display: none;" onchange="previewAvatar(this)">
+                            </div>
+                            
+                            <!-- フォーム -->
+                            <div class="space-y-6">
+                                <div class="profile-form-group">
+                                    <label for="editName">名前</label>
+                                    <input type="text" id="editName" class="glass-effect rounded-xl">
+                                </div>
+                                
+                                <div class="profile-form-group">
+                                    <label for="editUsername">ユーザー名</label>
+                                    <input type="text" id="editUsername" class="glass-effect rounded-xl">
+                                </div>
+                                
+                                <div class="profile-form-group">
+                                    <label for="editBio">自己紹介</label>
+                                    <textarea id="editBio" class="glass-effect rounded-xl"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ユーザーリストモーダル -->
+        <div id="userListModal" class="fixed inset-0 bg-black/80 z-50 hidden">
+            <div class="h-full flex flex-col">
+                <div class="glass-effect px-4 py-3">
+                    <div class="max-w-4xl mx-auto flex items-center justify-between">
+                        <button onclick="closeUserList()" class="glass-effect rounded-full p-2 text-white hover:bg-white/20">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <h3 class="text-xl font-bold text-white" id="userListTitle">ユーザーリスト</h3>
+                        <div class="w-8"></div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="space-y-3" id="userList">
+                            <!-- ユーザーカードが動的に追加される -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ニュース詳細モーダル -->
+        <div id="newsDetailModal" class="fixed inset-0 bg-black/80 z-50 hidden">
+            <div class="h-full flex flex-col">
+                <div class="glass-effect px-4 py-3">
+                    <div class="max-w-5xl mx-auto flex items-center justify-between">
+                        <button onclick="closeNewsDetail()" class="glass-effect rounded-full p-2 text-white hover:bg-white/20">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <h3 class="text-xl font-bold text-white">LooPin News 詳細</h3>
+                        <div class="w-8"></div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div class="max-w-5xl mx-auto">
+                        <!-- ニュースコンテンツ -->
+                        <div class="glass-effect rounded-3xl p-6 mb-6" id="newsContent">
+                            <!-- 動的にコンテンツが表示される -->
+                        </div>
+                        
+                        <!-- 信憑性投票 -->
+                        <div class="glass-effect rounded-2xl p-4 mb-6">
+                            <h4 class="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                                <i class="fas fa-balance-scale text-loopin-accent"></i>
+                                このニュースの信憑性
+                            </h4>
+                            <div class="flex items-center gap-4 mb-3">
+                                <button onclick="voteCredibility('trust')" class="flex-1 glass-effect rounded-xl p-3 text-center hover:bg-green-500/20 smooth-transition">
+                                    <i class="fas fa-thumbs-up text-green-400 mr-2"></i>
+                                    <span class="text-white">信頼できる</span>
+                                    <span class="text-green-400 font-semibold ml-2" id="trustCount">0</span>
+                                </button>
+                                <button onclick="voteCredibility('doubt')" class="flex-1 glass-effect rounded-xl p-3 text-center hover:bg-red-500/20 smooth-transition">
+                                    <i class="fas fa-thumbs-down text-red-400 mr-2"></i>
+                                    <span class="text-white">疑わしい</span>
+                                    <span class="text-red-400 font-semibold ml-2" id="doubtCount">0</span>
+                                </button>
+                            </div>
+                            <div class="credibility-meter">
+                                <div class="credibility-fill credibility-medium" id="credibilityBar" style="width: 50%"></div>
+                            </div>
+                            <p class="text-center text-white/70 text-sm mt-2">
+                                信憑性スコア: <span class="font-semibold" id="credibilityScore">50</span>%
+                            </p>
+                        </div>
+                        
+                        <!-- コメントセクション -->
+                        <div class="glass-effect rounded-2xl p-4">
+                            <h4 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                                <i class="fas fa-comments text-loopin-secondary"></i>
+                                コメント
+                            </h4>
+                            
+                            <!-- コメント入力 -->
+                            <div class="mb-4">
+                                <div class="flex gap-3">
+                                    <img src="https://picsum.photos/seed/user/40/40.jpg" alt="User" class="w-10 h-10 rounded-full">
+                                    <div class="flex-1">
+                                        <textarea 
+                                            id="commentInput"
+                                            placeholder="コメントを投稿してtestPiを獲得..."
+                                            class="comment-input w-full glass-effect rounded-2xl p-3 text-white placeholder-white/50 resize-none focus:outline-none focus:ring-2 focus:ring-loopin-primary"
+                                            rows="3"
+                                        ></textarea>
+                                        <div class="flex items-center justify-between mt-2">
+                                            <span class="text-yellow-400 text-sm">
+                                                <i class="fas fa-coins mr-1"></i>質の高いコメントで最大 2 testPi 獲得
+                                            </span>
+                                            <button onclick="postComment()" class="gradient-btn-primary text-white font-semibold px-4 py-2 rounded-xl hover:shadow-lg smooth-transition">
+                                                投稿
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- コメントリスト -->
+                            <div class="space-y-3" id="commentsList">
+                                <!-- コメントが動的に追加される -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ショート動画アップロードモーダル -->
+        <div id="reelUploadModal" class="fixed inset-0 bg-black/80 z-50 hidden">
+            <div class="h-full flex flex-col">
+                <div class="glass-effect px-4 py-3">
+                    <div class="max-w-4xl mx-auto flex items-center justify-between">
+                        <button onclick="closeReelUpload()" class="glass-effect rounded-full p-2 text-white hover:bg-white/20">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <h3 class="text-xl font-bold text-white">ショート動画を投稿</h3>
+                        <div class="w-8"></div>
+                    </div>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div class="max-w-4xl mx-auto">
+                        <div class="glass-effect rounded-3xl p-8">
+                            <div class="text-center mb-8">
+                                <div class="w-24 h-24 gradient-btn-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-video text-white text-3xl"></i>
+                                </div>
+                                <h2 class="text-2xl font-bold text-white mb-2">ショート動画を投稿</h2>
+                                <p class="text-white/70">Piコミュニティにショート動画を共有しよう！</p>
+                            </div>
+                            
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-white font-medium mb-2">動画ファイル</label>
+                                    <div class="glass-effect rounded-2xl p-8 text-center border-2 border-dashed border-white/30" id="videoDropZone">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-white/50 mb-4"></i>
+                                        <p class="text-white/70 mb-4">動画をドラッグ＆ドロップするか、クリックして選択</p>
+                                        <button class="gradient-btn-secondary text-white font-semibold px-6 py-3 rounded-xl hover:shadow-lg smooth-transition" onclick="document.getElementById('videoUpload').click()">
+                                            ファイルを選択
+                                        </button>
+                                        <input type="file" id="videoUpload" accept="video/*" style="display: none;" onchange="handleVideoUpload(this)">
+                                    </div>
+                                    <div id="videoPreview" class="mt-4 hidden">
+                                        <video id="previewVideo" class="w-full rounded-2xl" controls></video>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-white font-medium mb-2">キャプション</label>
+                                    <textarea 
+                                        id="reelCaption"
+                                        placeholder="動画の説明を入力..."
+                                        class="w-full glass-effect rounded-2xl p-4 text-white placeholder-white/50 resize-none focus:outline-none focus:ring-2 focus:ring-loopin-primary"
+                                        rows="3"
+                                    ></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-white font-medium mb-2">ハッシュタグ</label>
+                                    <input 
+                                        type="text" 
+                                        id="reelHashtags"
+                                        placeholder="#Pi #マイニング #エコシステム"
+                                        class="w-full glass-effect rounded-2xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-loopin-primary"
+                                    >
+                                </div>
+                                
+                                <div class="glass-effect rounded-2xl p-4">
+                                    <h4 class="text-white font-medium mb-2">報酬予測</h4>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-white/70">予測獲得testPi</span>
+                                        <span class="text-yellow-400 font-bold">5.0 - 15.0 testPi</span>
+                                    </div>
+                                    <div class="text-xs text-white/60 mt-1">
+                                        視聴回数やエンゲージメントに応じて変動
+                                    </div>
+                                </div>
+                                
+                                <button onclick="uploadReel()" class="w-full gradient-btn-primary text-white font-semibold py-4 rounded-2xl hover:shadow-lg smooth-transition">
+                                    投稿する
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- チャットルーム追加/編集モーダル -->
+        <div id="chatRoomModal" class="fixed inset-0 bg-black/80 z-50 hidden">
+            <div class="h-full flex items-center justify-center p-4">
+                <div class="glass-effect rounded-3xl p-8 max-w-md w-full">
+                    <h3 class="text-2xl font-bold text-white mb-6 text-center" id="chatRoomModalTitle">チャットルームを追加</h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-white font-medium mb-2">ルーム名</label>
+                            <input 
+                                type="text" 
+                                id="chatRoomName"
+                                placeholder="ルーム名を入力..."
+                                class="w-full glass-effect rounded-2xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-loopin-primary"
+                            >
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">説明</label>
+                            <textarea 
+                                id="chatRoomDescription"
+                                placeholder="ルームの説明を入力..."
+                                class="w-full glass-effect rounded-2xl p-4 text-white placeholder-white/50 resize-none focus:outline-none focus:ring-2 focus:ring-loopin-primary"
+                                rows="3"
+                            ></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-white font-medium mb-2">アイコン</label>
+                            <div class="grid grid-cols-5 gap-3">
+                                <button onclick="selectChatRoomIcon('fas fa-hashtag')" class="chat-room-icon-btn glass-effect rounded-xl p-3 text-white hover:bg-white/20">
+                                    <i class="fas fa-hashtag"></i>
+                                </button>
+                                <button onclick="selectChatRoomIcon('fas fa-chart-line')" class="chat-room-icon-btn glass-effect rounded-xl p-3 text-white hover:bg-white/20">
+                                    <i class="fas fa-chart-line"></i>
+                                </button>
+                                <button onclick="selectChatRoomIcon('fas fa-coins')" class="chat-room-icon-btn glass-effect rounded-xl p-3 text-white hover:bg-white/20">
+                                    <i class="fas fa-coins"></i>
+                                </button>
+                                <button onclick="selectChatRoomIcon('fas fa-infinity')" class="chat-room-icon-btn glass-effect rounded-xl p-3 text-white hover:bg-white/20">
+                                    <i class="fas fa-infinity"></i>
+                                </button>
+                                <button onclick="selectChatRoomIcon('fas fa-lightbulb')" class="chat-room-icon-btn glass-effect rounded-xl p-3 text-white hover:bg-white/20">
+                                    <i class="fas fa-lightbulb"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-3">
+                            <button onclick="closeChatRoomModal()" class="flex-1 glass-effect rounded-2xl px-4 py-3 text-white hover:bg-white/20">
+                                キャンセル
+                            </button>
+                            <button onclick="saveChatRoom()" class="flex-1 gradient-btn-primary text-white font-semibold px-4 py-3 rounded-2xl hover:shadow-lg smooth-transition">
+                                保存
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- testPi獲得ポップアップ -->
+        <div id="piPopup" class="fixed bottom-8 right-8 hidden">
+            <div class="glass-effect rounded-2xl p-4 flex items-center gap-3 loopin-pi-coin">
+                <div class="w-12 h-12 gradient-btn-accent rounded-full flex items-center justify-center">
+                    <i class="fas fa-coins text-white text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-white font-bold text-lg">+<span id="piAmount">0.00</span> testPi</p>
+                    <p class="text-white/70 text-sm">LooPinで獲得！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- アプリケーションコア -->
+    <script>
+        // Firebase設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyB4k1kX9rYrV8jX8Z8Z8Z8Z8Z8Z8Z8Z8Z8",
+            authDomain: "loopin-app.firebaseapp.com",
+            projectId: "loopin-app",
+            storageBucket: "loopin-app.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        // Firebase初期化
+        firebase.initializeApp(firebaseConfig);
+        
+        // Firebaseサービスの取得
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+        
+        // コレクション参照
+        const usersCollection = db.collection('users');
+        const postsCollection = db.collection('posts');
+        const chatRoomsCollection = db.collection('chatRooms');
+        const chatMessagesCollection = db.collection('chatMessages');
+        const reelsCollection = db.collection('reels');
+        const newsCollection = db.collection('news');
+        const followsCollection = db.collection('follows');
+        
+        // アプリケーション設定
+        const APP_CONFIG = {
+            TEST_MODE: true,
+            PI_CURRENCY: 'testPi',
+            ADMIN_USERS: ['admin1', 'admin2'], // 管理者ユーザーID
+        };
+        
+        // 言語データ
+        const languages = [
+            { code: 'ja', name: '日本語', flag: '🇯🇵' },
+            { code: 'en', name: 'English', flag: '🇺🇸' },
+            { code: 'zh', name: '中文', flag: '🇨🇳' },
+            { code: 'ko', name: '한국어', flag: '🇰🇷' },
+            { code: 'es', name: 'Español', flag: '🇪🇸' },
+            { code: 'fr', name: 'Français', flag: '🇫🇷' },
+            // 他24言語...
+        ];
+        
+        // ユーザーデータ管理
+        class UserDataManager {
+            static getCurrentUser() {
+                return auth.currentUser;
+            }
+            
+            static async getUserData(userId) {
+                try {
+                    const doc = await usersCollection.doc(userId).get();
+                    return doc.exists ? doc.data() : null;
+                } catch (error) {
+                    console.error('Error getting user data:', error);
+                    return null;
+                }
+            }
+            
+            static async saveUserData(userId, userData) {
+                try {
+                    await usersCollection.doc(userId).set(userData, { merge: true });
+                    return true;
+                } catch (error) {
+                    console.error('Error saving user data:', error);
+                    return false;
+                }
+            }
+            
+            static async updateUserData(userId, updates) {
+                try {
+                    await usersCollection.doc(userId).update(updates);
+                    return true;
+                } catch (error) {
+                    console.error('Error updating user data:', error);
+                    return false;
+                }
+            }
+            
+            static async createUser(userId, userData) {
+                try {
+                    await usersCollection.doc(userId).set(userData);
+                    return true;
+                } catch (error) {
+                    console.error('Error creating user:', error);
+                    return false;
+                }
+            }
+            
+            static isAdmin() {
+                const currentUser = this.getCurrentUser();
+                return currentUser && APP_CONFIG.ADMIN_USERS.includes(currentUser.uid);
+            }
+            
+            static async getFollowing(userId) {
+                try {
+                    const snapshot = await followsCollection
+                        .where('followerId', '==', userId)
+                        .get();
+                    
+                    return snapshot.docs.map(doc => doc.data().followingId);
+                } catch (error) {
+                    console.error('Error getting following:', error);
+                    return [];
+                }
+            }
+            
+            static async addFollowing(followerId, followingId) {
+                try {
+                    // 既にフォローしているかチェック
+                    const existing = await followsCollection
+                        .where('followerId', '==', followerId)
+                        .where('followingId', '==', followingId)
+                        .get();
+                    
+                    if (!existing.empty) {
+                        return false; // 既にフォローしている
+                    }
+                    
+                    // フォロー関係を追加
+                    await followsCollection.add({
+                        followerId,
+                        followingId,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error adding following:', error);
+                    return false;
+                }
+            }
+            
+            static async removeFollowing(followerId, followingId) {
+                try {
+                    const snapshot = await followsCollection
+                        .where('followerId', '==', followerId)
+                        .where('followingId', '==', followingId)
+                        .get();
+                    
+                    if (snapshot.empty) {
+                        return false; // フォローしていない
+                    }
+                    
+                    // フォロー関係を削除
+                    const batch = db.batch();
+                    snapshot.docs.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    await batch.commit();
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error removing following:', error);
+                    return false;
+                }
+            }
+            
+            static async getFollowers(userId) {
+                try {
+                    const snapshot = await followsCollection
+                        .where('followingId', '==', userId)
+                        .get();
+                    
+                    return snapshot.docs.map(doc => doc.data().followerId);
+                } catch (error) {
+                    console.error('Error getting followers:', error);
+                    return [];
+                }
+            }
+            
+            static async isFollowing(followerId, followingId) {
+                try {
+                    const snapshot = await followsCollection
+                        .where('followerId', '==', followerId)
+                        .where('followingId', '==', followingId)
+                        .get();
+                    
+                    return !snapshot.empty;
+                } catch (error) {
+                    console.error('Error checking follow status:', error);
+                    return false;
+                }
+            }
+        }
+        
+        // チャットルーム管理
+        class ChatRoomManager {
+            static async getChatRooms() {
+                try {
+                    const snapshot = await chatRoomsCollection.get();
+                    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                } catch (error) {
+                    console.error('Error getting chat rooms:', error);
+                    return [];
+                }
+            }
+            
+            static async addChatRoom(room) {
+                try {
+                    const docRef = await chatRoomsCollection.add({
+                        ...room,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    return { id: docRef.id, ...room };
+                } catch (error) {
+                    console.error('Error adding chat room:', error);
+                    return null;
+                }
+            }
+            
+            static async updateChatRoom(roomId, updates) {
+                try {
+                    await chatRoomsCollection.doc(roomId).update(updates);
+                    return true;
+                } catch (error) {
+                    console.error('Error updating chat room:', error);
+                    return false;
+                }
+            }
+            
+            static async deleteChatRoom(roomId) {
+                try {
+                    await chatRoomsCollection.doc(roomId).delete();
+                    // 関連するメッセージも削除
+                    const messagesSnapshot = await chatMessagesCollection
+                        .where('roomId', '==', roomId)
+                        .get();
+                    
+                    const batch = db.batch();
+                    messagesSnapshot.docs.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    await batch.commit();
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error deleting chat room:', error);
+                    return false;
+                }
+            }
+            
+            static async getChatMessages(roomId) {
+                try {
+                    const snapshot = await chatMessagesCollection
+                        .where('roomId', '==', roomId)
+                        .orderBy('createdAt', 'asc')
+                        .get();
+                    
+                    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                } catch (error) {
+                    console.error('Error getting chat messages:', error);
+                    return [];
+                }
+            }
+            
+            static async addChatMessage(message) {
+                try {
+                    const docRef = await chatMessagesCollection.add({
+                        ...message,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    return { id: docRef.id, ...message };
+                } catch (error) {
+                    console.error('Error adding chat message:', error);
+                    return null;
+                }
+            }
+        }
+        
+        // 投稿管理
+        class PostManager {
+            static async getPosts(limit = 20) {
+                try {
+                    const snapshot = await postsCollection
+                        .orderBy('createdAt', 'desc')
+                        .limit(limit)
+                        .get();
+                    
+                    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                } catch (error) {
+                    console.error('Error getting posts:', error);
+                    return [];
+                }
+            }
+            
+            static async addPost(post) {
+                try {
+                    const docRef = await postsCollection.add({
+                        ...post,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    return { id: docRef.id, ...post };
+                } catch (error) {
+                    console.error('Error adding post:', error);
+                    return null;
+                }
+            }
+            
+            static async updatePost(postId, updates) {
+                try {
+                    await postsCollection.doc(postId).update(updates);
+                    return true;
+                } catch (error) {
+                    console.error('Error updating post:', error);
+                    return false;
+                }
+            }
+            
+            static async deletePost(postId) {
+                try {
+                    await postsCollection.doc(postId).delete();
+                    return true;
+                } catch (error) {
+                    console.error('Error deleting post:', error);
+                    return false;
+                }
+            }
+        }
+        
+        // ショート動画管理
+        class ReelManager {
+            static async getReels(limit = 20) {
+                try {
+                    const snapshot = await reelsCollection
+                        .orderBy('createdAt', 'desc')
+                        .limit(limit)
+                        .get();
+                    
+                    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                } catch (error) {
+                    console.error('Error getting reels:', error);
+                    return [];
+                }
+            }
+            
+            static async addReel(reel) {
+                try {
+                    const docRef = await reelsCollection.add({
+                        ...reel,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    return { id: docRef.id, ...reel };
+                } catch (error) {
+                    console.error('Error adding reel:', error);
+                    return null;
+                }
+            }
+            
+            static async updateReel(reelId, updates) {
+                try {
+                    await reelsCollection.doc(reelId).update(updates);
+                    return true;
+                } catch (error) {
+                    console.error('Error updating reel:', error);
+                    return false;
+                }
+            }
+            
+            static async deleteReel(reelId) {
+                try {
+                    const reel = await reelsCollection.doc(reelId).get();
+                    if (reel.exists) {
+                        const reelData = reel.data();
+                        // Storageから動画ファイルを削除
+                        if (reelData.videoUrl) {
+                            const videoRef = storage.refFromURL(reelData.videoUrl);
+                            await videoRef.delete();
+                        }
+                    }
+                    await reelsCollection.doc(reelId).delete();
+                    return true;
+                } catch (error) {
+                    console.error('Error deleting reel:', error);
+                    return false;
+                }
+            }
+            
+            static async uploadVideo(file) {
+                try {
+                    const fileName = `${Date.now()}_${file.name}`;
+                    const storageRef = storage.ref(`reels/${fileName}`);
+                    const snapshot = await storageRef.put(file);
+                    const downloadUrl = await snapshot.ref.getDownloadURL();
+                    return downloadUrl;
+                } catch (error) {
+                    console.error('Error uploading video:', error);
+                    return null;
+                }
+            }
+        }
+        
+        // ニュース管理
+        class NewsManager {
+            static async getNews(limit = 20) {
+                try {
+                    const snapshot = await newsCollection
+                        .orderBy('createdAt', 'desc')
+                        .limit(limit)
+                        .get();
+                    
+                    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                } catch (error) {
+                    console.error('Error getting news:', error);
+                    return [];
+                }
+            }
+            
+            static async saveNews(news) {
+                try {
+                    // 既存のニュースを削除
+                    const snapshot = await newsCollection.get();
+                    const batch = db.batch();
+                    snapshot.docs.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    await batch.commit();
+                    
+                    // 新しいニュースを追加
+                    for (const newsItem of news) {
+                        await newsCollection.add({
+                            ...newsItem,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error saving news:', error);
+                    return false;
+                }
+            }
+        }
+        
+        // Pi認証
+        async function authenticatePi() {
+            if (!window.Pi) {
+                showNotification('Pi SDKが読み込まれていません');
+                return;
+            }
+            
+            try {
+                document.getElementById('authContent').classList.add('hidden');
+                document.getElementById('authLoading').classList.remove('hidden');
+                
+                // Pi SDKで認証
+                const authResult = await window.Pi.authenticate(['username', 'payments'], {
+                    onIncompletePaymentFound: (payment) => {
+                        console.log('Incomplete payment found:', payment);
+                    }
+                });
+                
+                // Firebase認証
+                const firebaseAuth = await auth.signInWithCustomToken(authResult.user.uid);
+                
+                // ユーザーデータを取得または作成
+                let userData = await UserDataManager.getUserData(firebaseAuth.user.uid);
+                if (!userData) {
+                    userData = {
+                        uid: firebaseAuth.user.uid,
+                        username: authResult.user.username,
+                        name: authResult.user.username,
+                        bio: '',
+                        avatar: `https://picsum.photos/seed/${firebaseAuth.user.uid}/120/120.jpg`,
+                        piBalance: 0,
+                        postsCount: 0,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    
+                    await UserDataManager.createUser(firebaseAuth.user.uid, userData);
+                }
+                
+                // メイン画面を表示
+                document.getElementById('authOverlay').classList.add('hidden');
+                document.getElementById('mainContainer').classList.remove('hidden');
+                
+                // ユーザー情報をUIに反映
+                updateUserInfo(userData);
+                
+                // 初期データを読み込む
+                loadInitialData();
+                
+            } catch (error) {
+                console.error('Pi authentication failed:', error);
+                document.getElementById('authContent').classList.remove('hidden');
+                document.getElementById('authLoading').classList.add('hidden');
+                showNotification('認証に失敗しました');
+            }
+        }
+        
+        // Firebase認証状態の監視
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                // ユーザーがログインしている
+                const userData = await UserDataManager.getUserData(user.uid);
+                if (userData) {
+                    updateUserInfo(userData);
+                    loadInitialData();
+                }
+            } else {
+                // ユーザーがログアウトしている
+                document.getElementById('mainContainer').classList.add('hidden');
+                document.getElementById('authOverlay').classList.remove('hidden');
+            }
+        });
+        
+        // ユーザー情報更新
+        function updateUserInfo(userData) {
+            document.getElementById('userAvatar').src = userData.avatar;
+            updatePiBalance(userData.piBalance || 0);
+        }
+        
+        // testPi残高更新
+        async function updatePiBalance(amount) {
+            const user = UserDataManager.getCurrentUser();
+            if (user) {
+                const newBalance = (user.piBalance || 0) + amount;
+                await UserDataManager.updateUserData(user.uid, { piBalance: newBalance });
+                
+                const balanceElement = document.getElementById('piBalance');
+                balanceElement.textContent = newBalance.toFixed(2);
+                
+                // アニメーション効果
+                balanceElement.style.transform = 'scale(1.2)';
+                balanceElement.style.color = '#FFE66D';
+                
+                setTimeout(() => {
+                    balanceElement.style.transform = 'scale(1)';
+                    balanceElement.style.color = '';
+                }, 500);
+            }
+        }
+        
+        // testPi獲得ポップアップ表示
+        function showRewardPopup(amount) {
+            const popup = document.getElementById('piPopup');
+            document.getElementById('piAmount').textContent = amount.toFixed(2);
+            
+            popup.classList.remove('hidden');
+            
+            // アニメーション効果
+            popup.style.transform = 'translateY(20px)';
+            popup.style.opacity = '0';
+            
+            setTimeout(() => {
+                popup.style.transition = 'transform 0.5s, opacity 0.5s';
+                popup.style.transform = 'translateY(0)';
+                popup.style.opacity = '1';
+            }, 10);
+            
+            // 5秒後に非表示
+            setTimeout(() => {
+                popup.style.transition = 'transform 0.5s, opacity 0.5s';
+                popup.style.transform = 'translateY(20px)';
+                popup.style.opacity = '0';
+                
+                setTimeout(() => {
+                    popup.classList.add('hidden');
+                }, 500);
+            }, 5000);
+        }
+        
+        // 言語選択
+        function selectLanguage(langCode) {
+            localStorage.setItem('selectedLanguage', langCode);
+            document.getElementById('langOverlay').classList.add('hidden');
+            document.getElementById('authOverlay').classList.remove('hidden');
+            
+            // 選択した言語でUIを更新
+            updateUILanguage(langCode);
+        }
+        
+        // タブ切り替え
+        function switchTab(tabName) {
+            // すべてのタブコンテンツを非表示
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // すべてのタブボタンからアクティブクラスを削除
+            document.querySelectorAll('.loopin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 選択したタブコンテンツを表示
+            document.getElementById(`${tabName}Tab`).classList.remove('hidden');
+            
+            // 選択したタブボタンにアクティブクラスを追加
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            
+            // タブに応じたデータを読み込む
+            switch (tabName) {
+                case 'feed':
+                    loadFeed();
+                    break;
+                case 'reels':
+                    loadReels();
+                    break;
+                case 'topics':
+                    loadTopics();
+                    break;
+                case 'news':
+                    loadNews();
+                    break;
+                case 'chat':
+                    loadChat();
+                    break;
+            }
+        }
+        
+        // 投稿作成
+        async function createPost() {
+            const input = document.getElementById('postInput');
+            const content = input.value.trim();
+            
+            if (!content) {
+                showNotification('投稿内容を入力してください');
+                return;
+            }
+            
+            const user = UserDataManager.getCurrentUser();
+            if (!user) {
+                showNotification('認証が必要です');
+                return;
+            }
+            
+            const userData = await UserDataManager.getUserData(user.uid);
+            if (!userData) {
+                showNotification('ユーザーデータの取得に失敗しました');
+                return;
+            }
+            
+            // 投稿を作成
+            const post = {
+                userId: user.uid,
+                userName: userData.name,
+                userAvatar: userData.avatar,
+                content: content,
+                likes: 0,
+                comments: 0,
+                shares: 0,
+                piEarned: 0
+            };
+            
+            // 投稿を保存
+            const savedPost = await PostManager.addPost(post);
+            if (savedPost) {
+                // UIに投稿を追加
+                addPostToUI(savedPost);
+                
+                // 入力をクリア
+                input.value = '';
+                
+                // testPiを付与
+                const rewardAmount = 0.5;
+                await updatePiBalance(rewardAmount);
+                showRewardPopup(rewardAmount);
+                
+                // ユーザーデータを更新
+                await UserDataManager.updateUserData(user.uid, {
+                    postsCount: (userData.postsCount || 0) + 1
+                });
+                
+                // ミッション進捗を更新
+                updateMissionProgress('posts');
+                
+                showNotification('投稿が完了しました');
+            } else {
+                showNotification('投稿に失敗しました');
+            }
+        }
+        
+        // 投稿をUIに追加
+        function addPostToUI(post) {
+            const feed = document.getElementById('feed');
+            const postCard = document.createElement('div');
+            postCard.className = 'post-card glass-effect rounded-3xl p-6';
+            
+            const timeAgo = getTimeAgo(post.createdAt);
+            
+            postCard.innerHTML = `
+                <div class="flex items-start gap-4 mb-4">
+                    <img src="${post.userAvatar}" alt="User" class="w-10 h-10 rounded-full">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold text-white">${post.userName}</h4>
+                            <span class="text-xs text-white/60">${timeAgo}</span>
+                        </div>
+                        <p class="text-white/90 mb-4">${post.content}</p>
+                        
+                        <!-- エンゲージメントメトリクス -->
+                        <div class="flex items-center gap-6 text-white/70">
+                            <button onclick="likePost(this, '${post.id}')" class="flex items-center gap-2 hover:text-red-400 smooth-transition">
+                                <i class="far fa-heart"></i>
+                                <span>${post.likes}</span>
+                            </button>
+                            <button onclick="showComments('${post.id}')" class="flex items-center gap-2 hover:text-blue-400 smooth-transition">
+                                <i class="far fa-comment"></i>
+                                <span>${post.comments}</span>
+                            </button>
+                            <button onclick="retweetPost(this, '${post.id}')" class="flex items-center gap-2 hover:text-green-400 smooth-transition">
+                                <i class="fas fa-retweet"></i>
+                                <span>${post.shares}</span>
+                            </button>
+                            <button class="flex items-center gap-2 hover:text-yellow-400 smooth-transition">
+                                <i class="fas fa-coins text-yellow-400"></i>
+                                <span>${post.piEarned.toFixed(2)} testPi</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            feed.insertBefore(postCard, feed.firstChild);
+        }
+        
+        // いいね処理
+        async function likePost(button, postId) {
+            const icon = button.querySelector('i');
+            const count = button.querySelector('span');
+            
+            if (icon.classList.contains('far')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                button.classList.add('text-red-400');
+                count.textContent = parseInt(count.textContent) + 1;
+                
+                // 投稿データを更新
+                await PostManager.updatePost(postId, { 
+                    likes: parseInt(count.textContent)
+                });
+                
+                // testPiを付与
+                const rewardAmount = 0.01;
+                await updatePiBalance(rewardAmount);
+                showRewardPopup(rewardAmount);
+                
+                // ミッション進捗を更新
+                updateMissionProgress('likes');
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                button.classList.remove('text-red-400');
+                count.textContent = parseInt(count.textContent) - 1;
+                
+                // 投稿データを更新
+                await PostManager.updatePost(postId, { 
+                    likes: parseInt(count.textContent)
+                });
+            }
+        }
+        
+        // リツイート処理
+        async function retweetPost(button, postId) {
+            const count = button.querySelector('span');
+            count.textContent = parseInt(count.textContent) + 1;
+            
+            // 投稿データを更新
+            await PostManager.updatePost(postId, { 
+                shares: parseInt(count.textContent)
+            });
+            
+            // testPiを付与
+            const rewardAmount = 0.2;
+            await updatePiBalance(rewardAmount);
+            showRewardPopup(rewardAmount);
+            
+            showNotification('リツイートしました');
+        }
+        
+        // ミッション進捗更新
+        function updateMissionProgress(missionId) {
+            const today = new Date().toISOString().split('T')[0];
+            const missionKey = `mission_${missionId}_${today}`;
+            
+            // 現在の進捗を取得
+            let progress = parseInt(localStorage.getItem(missionKey) || '0');
+            progress += 1;
+            
+            // 進捗を保存
+            localStorage.setItem(missionKey, progress.toString());
+            
+            // ミッション完了チェック
+            const missions = {
+                posts: { target: 3, reward: 5 },
+                likes: { target: 10, reward: 3 },
+                comments: { target: 5, reward: 4 }
+            };
+            
+            const mission = missions[missionId];
+            if (mission && progress >= mission.target) {
+                // 報酬を付与
+                updatePiBalance(mission.reward);
+                showRewardPopup(mission.reward);
+                showNotification(`ミッション完了！${mission.reward} testPi獲得！`);
+            }
+        }
+        
+        // ニュース読み込み
+        async function loadNews() {
+            const news = await NewsManager.getNews();
+            
+            if (news.length === 0) {
+                // 初期ニュースデータを追加
+                const initialNews = [
+                    {
+                        title: 'Piネットワーク、新規パートナーシップを発表',
+                        source: 'Pi Network Official',
+                        time: '2時間前',
+                        category: 'partnership',
+                        content: 'Piネットワークは本日、大手eコマースプラットフォームとの戦略的パートナーシップを発表しました。この提携により、Piの実用性が大幅に向上する見込みです。',
+                        image: 'https://picsum.photos/seed/news1/600/400.jpg',
+                        credibility: 85
+                    },
+                    {
+                        title: 'Pi価格、過去最高値を更新',
+                        source: 'CryptoNews',
+                        time: '5時間前',
+                        category: 'price',
+                        content: 'Piの価格が本日、過去最高値を更新しました。市場の期待感が高まっており、今後の値動きが注目されています。',
+                        image: 'https://picsum.photos/seed/news2/600/400.jpg',
+                        credibility: 72
+                    },
+                    {
+                        title: 'Piアプリ開発者向けSDKがアップデート',
+                        source: 'Pi Developer Portal',
+                        time: '1日前',
+                        category: 'update',
+                        content: 'Piネットワークは、アプリ開発者向けのSDKを大幅にアップデートしました。新機能により、開発者はより簡単にPiを統合できるようになります。',
+                        image: 'https://picsum.photos/seed/news3/600/400.jpg',
+                        credibility: 95
+                    }
+                ];
+                
+                await NewsManager.saveNews(initialNews);
+                loadNews();
+                return;
+            }
+            
+            // トレンドニュースを表示
+            const trendingNewsContainer = document.getElementById('trendingNews');
+            trendingNewsContainer.innerHTML = '';
+            
+            news.slice(0, 2).forEach(newsItem => {
+                const newsCard = document.createElement('div');
+                newsCard.className = 'glass-effect rounded-2xl overflow-hidden cursor-pointer';
+                newsCard.onclick = () => showNewsDetail(newsItem);
+                
+                newsCard.innerHTML = `
+                    <div class="h-40 overflow-hidden">
+                        <img src="${newsItem.image}" alt="${newsItem.title}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs text-white/60">${newsItem.source}</span>
+                            <span class="text-xs text-white/60">•</span>
+                            <span class="text-xs text-white/60">${newsItem.time}</span>
+                        </div>
+                        <h3 class="font-bold text-white mb-2">${newsItem.title}</h3>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs px-2 py-1 rounded-full bg-white/20">${getCategoryName(newsItem.category)}</span>
+                            <div class="flex items-center gap-1">
+                                <i class="fas fa-balance-scale text-xs ${getCredibilityColor(newsItem.credibility)}"></i>
+                                <span class="text-xs ${getCredibilityColor(newsItem.credibility)}">${newsItem.credibility}%</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                trendingNewsContainer.appendChild(newsCard);
+            });
+            
+            // ニュースリストを表示
+            const newsListContainer = document.getElementById('newsList');
+            newsListContainer.innerHTML = '';
+            
+            news.forEach(newsItem => {
+                const newsItemElement = document.createElement('div');
+                newsItemElement.className = 'glass-effect rounded-2xl p-4 cursor-pointer';
+                newsItemElement.onclick = () => showNewsDetail(newsItem);
+                
+                newsItemElement.innerHTML = `
+                    <div class="flex gap-4">
+                        <div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0">
+                            <img src="${newsItem.image}" alt="${newsItem.title}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-xs text-white/60">${newsItem.source}</span>
+                                <span class="text-xs text-white/60">•</span>
+                                <span class="text-xs text-white/60">${newsItem.time}</span>
+                            </div>
+                            <h3 class="font-bold text-white mb-2">${newsItem.title}</h3>
+                            <p class="text-white/70 text-sm mb-2 line-clamp-2">${newsItem.content}</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs px-2 py-1 rounded-full bg-white/20">${getCategoryName(newsItem.category)}</span>
+                                <div class="flex items-center gap-1">
+                                    <i class="fas fa-balance-scale text-xs ${getCredibilityColor(newsItem.credibility)}"></i>
+                                    <span class="text-xs ${getCredibilityColor(newsItem.credibility)}">${newsItem.credibility}%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                newsListContainer.appendChild(newsItemElement);
+            });
+            
+            // 最終更新時刻を更新
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        // ニュース詳細表示
+        function showNewsDetail(newsItem) {
+            const modal = document.getElementById('newsDetailModal');
+            const content = document.getElementById('newsContent');
+            
+            content.innerHTML = `
+                <div class="mb-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-xs text-white/60">${newsItem.source}</span>
+                        <span class="text-xs text-white/60">•</span>
+                        <span class="text-xs text-white/60">${newsItem.time}</span>
+                    </div>
+                    <h1 class="text-3xl font-bold text-white mb-4">${newsItem.title}</h1>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-xs px-2 py-1 rounded-full bg-white/20">${getCategoryName(newsItem.category)}</span>
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-balance-scale text-xs ${getCredibilityColor(newsItem.credibility)}"></i>
+                            <span class="text-xs ${getCredibilityColor(newsItem.credibility)}">${newsItem.credibility}%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="rounded-2xl overflow-hidden mb-6">
+                    <img src="${newsItem.image}" alt="${newsItem.title}" class="w-full">
+                </div>
+                
+                <div class="prose prose-invert max-w-none">
+                    <p class="text-white/90 mb-4">${newsItem.content}</p>
+                    <p class="text-white/90 mb-4">Piネットワークのコミュニティは、このニュースについて活発に議論しています。信憑性投票に参加して、あなたの意見を共有しましょう。</p>
+                </div>
+            `;
+            
+            // 信憑性スコアを設定
+            document.getElementById('credibilityScore').textContent = newsItem.credibility;
+            document.getElementById('credibilityBar').style.width = `${newsItem.credibility}%`;
+            
+            // 信憑性スコアに応じて色を変更
+            const credibilityBar = document.getElementById('credibilityBar');
+            credibilityBar.classList.remove('credibility-high', 'credibility-medium', 'credibility-low');
+            
+            if (newsItem.credibility >= 80) {
+                credibilityBar.classList.add('credibility-high');
+            } else if (newsItem.credibility >= 50) {
+                credibilityBar.classList.add('credibility-medium');
+            } else {
+                credibilityBar.classList.add('credibility-low');
+            }
+            
+            modal.classList.remove('hidden');
+        }
+        
+        // ニュース詳細を閉じる
+        function closeNewsDetail() {
+            document.getElementById('newsDetailModal').classList.add('hidden');
+        }
+        
+        // 信憑性投票
+        async function voteCredibility(voteType) {
+            const trustCount = document.getElementById('trustCount');
+            const doubtCount = document.getElementById('doubtCount');
+            const credibilityScore = document.getElementById('credibilityScore');
+            const credibilityBar = document.getElementById('credibilityBar');
+            
+            if (voteType === 'trust') {
+                trustCount.textContent = parseInt(trustCount.textContent) + 1;
+            } else {
+                doubtCount.textContent = parseInt(doubtCount.textContent) + 1;
+            }
+            
+            // 信憑性スコアを再計算
+            const trust = parseInt(trustCount.textContent);
+            const doubt = parseInt(doubtCount.textContent);
+            const total = trust + doubt;
+            const score = Math.round((trust / total) * 100);
+            
+            credibilityScore.textContent = score;
+            credibilityBar.style.width = `${score}%`;
+            
+            // 信憑性スコアに応じて色を変更
+            credibilityBar.classList.remove('credibility-high', 'credibility-medium', 'credibility-low');
+            
+            if (score >= 80) {
+                credibilityBar.classList.add('credibility-high');
+            } else if (score >= 50) {
+                credibilityBar.classList.add('credibility-medium');
+            } else {
+                credibilityBar.classList.add('credibility-low');
+            }
+            
+            // testPiを付与
+            const rewardAmount = 0.05;
+            await updatePiBalance(rewardAmount);
+            showRewardPopup(rewardAmount);
+            
+            showNotification('投票ありがとうございます');
+        }
+        
+        // コメント投稿
+        async function postComment() {
+            const input = document.getElementById('commentInput');
+            const content = input.value.trim();
+            
+            if (!content) {
+                showNotification('コメント内容を入力してください');
+                return;
+            }
+            
+            const user = UserDataManager.getCurrentUser();
+            if (!user) {
+                showNotification('認証が必要です');
+                return;
+            }
+            
+            const userData = await UserDataManager.getUserData(user.uid);
+            if (!userData) {
+                showNotification('ユーザーデータの取得に失敗しました');
+                return;
+            }
+            
+            // コメントを作成
+            const comment = {
+                userId: user.uid,
+                userName: userData.name,
+                userAvatar: userData.avatar,
+                content: content,
+                timestamp: new Date().toISOString()
+            };
+            
+            // UIにコメントを追加
+            addCommentToUI(comment);
+            
+            // 入力をクリア
+            input.value = '';
+            
+            // testPiを付与
+            const rewardAmount = 0.1;
+            await updatePiBalance(rewardAmount);
+            showRewardPopup(rewardAmount);
+            
+            // ミッション進捗を更新
+            updateMissionProgress('comments');
+            
+            showNotification('コメントが投稿されました');
+        }
+        
+        // コメントをUIに追加
+        function addCommentToUI(comment) {
+            const commentsList = document.getElementById('commentsList');
+            const commentItem = document.createElement('div');
+            commentItem.className = 'flex gap-3';
+            
+            const timeAgo = getTimeAgo(new Date(comment.timestamp));
+            
+            commentItem.innerHTML = `
+                <img src="${comment.userAvatar}" alt="User" class="w-10 h-10 rounded-full">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <h4 class="font-semibold text-white">${comment.userName}</h4>
+                        <span class="text-xs text-white/60">${timeAgo}</span>
+                    </div>
+                    <p class="text-white/90">${comment.content}</p>
+                </div>
+            `;
+            
+            commentsList.insertBefore(commentItem, commentsList.firstChild);
+        }
+        
+        // ショート動画読み込み
+        async function loadReels() {
+            const reels = await ReelManager.getReels();
+            const reelsContainer = document.getElementById('reelsContainer');
+            reelsContainer.innerHTML = '';
+            
+            if (reels.length === 0) {
+                // デモ用のサンプル動画を追加
+                const sampleReels = [
+                    {
+                        title: 'Piネットワークの未来',
+                        user: 'Pi Enthusiast',
+                        userId: 'user1',
+                        userAvatar: 'https://picsum.photos/seed/user1/40/40.jpg',
+                        views: 12450,
+                        likes: 3420,
+                        comments: 128,
+                        videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4'
+                    },
+                    {
+                        title: '今日のPi価格分析',
+                        user: 'Crypto Analyst',
+                        userId: 'user2',
+                        userAvatar: 'https://picsum.photos/seed/user2/40/40.jpg',
+                        views: 8760,
+                        likes: 2150,
+                        comments: 87,
+                        videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4'
+                    },
+                    {
+                        title: 'Piマイニングチュートリアル',
+                        user: 'Pi Miner',
+                        userId: 'user3',
+                        userAvatar: 'https://picsum.photos/seed/user3/40/40.jpg',
+                        views: 15320,
+                        likes: 4320,
+                        comments: 210,
+                        videoUrl: 'https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4'
+                    }
+                ];
+                
+                for (const reel of sampleReels) {
+                    await ReelManager.addReel(reel);
+                }
+                
+                loadReels();
+                return;
+            }
+            
+            reels.forEach(reel => {
+                const reelItem = document.createElement('div');
+                reelItem.className = 'reel-item';
+                
+                reelItem.innerHTML = `
+                    <video class="reel-video" src="${reel.videoUrl}" controls></video>
+                    <div class="reel-overlay">
+                        <h3 class="text-xl font-bold text-white mb-2">${reel.title}</h3>
+                        <div class="flex items-center gap-2 mb-4">
+                            <img src="${reel.userAvatar}" alt="User" class="w-8 h-8 rounded-full">
+                            <p class="text-white/80">@${reel.user}</p>
+                        </div>
+                    </div>
+                    <div class="reel-actions">
+                        <button class="reel-action-btn" onclick="likeReel(this, '${reel.id}')">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <div class="text-white text-sm text-center">${formatNumber(reel.likes)}</div>
+                        
+                        <button class="reel-action-btn" onclick="commentReel(this, '${reel.id}')">
+                            <i class="far fa-comment"></i>
+                        </button>
+                        <div class="text-white text-sm text-center">${formatNumber(reel.comments)}</div>
+                        
+                        <button class="reel-action-btn" onclick="shareReel(this, '${reel.id}')">
+                            <i class="far fa-share-square"></i>
+                        </button>
+                    </div>
+                `;
+                
+                reelsContainer.appendChild(reelItem);
+            });
+        }
+        
+        // ショート動画アップロードモーダル表示
+        function showReelUpload() {
+            document.getElementById('reelUploadModal').classList.remove('hidden');
+        }
+        
+        // ショート動画アップロードモーダルを閉じる
+        function closeReelUpload() {
+            document.getElementById('reelUploadModal').classList.add('hidden');
+            // フォームをリセット
+            document.getElementById('reelCaption').value = '';
+            document.getElementById('reelHashtags').value = '';
+            document.getElementById('videoPreview').classList.add('hidden');
+            document.getElementById('previewVideo').src = '';
+        }
+        
+        // 動画アップロード処理
+        function handleVideoUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const videoPreview = document.getElementById('videoPreview');
+                    const previewVideo = document.getElementById('previewVideo');
+                    
+                    previewVideo.src = e.target.result;
+                    videoPreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // ショート動画アップロード
+        async function uploadReel() {
+            const caption = document.getElementById('reelCaption').value.trim();
+            const hashtags = document.getElementById('reelHashtags').value.trim();
+            const videoFile = document.getElementById('videoUpload').files[0];
+            
+            if (!videoFile) {
+                showNotification('動画ファイルを選択してください');
+                return;
+            }
+            
+            if (!caption) {
+                showNotification('キャプションを入力してください');
+                return;
+            }
+            
+            const user = UserDataManager.getCurrentUser();
+            if (!user) {
+                showNotification('認証が必要です');
+                return;
+            }
+            
+            const userData = await UserDataManager.getUserData(user.uid);
+            if (!userData) {
+                showNotification('ユーザーデータの取得に失敗しました');
+                return;
+            }
+            
+            // アップロード処理
+            showNotification('動画をアップロードしています...');
+            
+            try {
+                // 動画をFirebase Storageにアップロード
+                const videoUrl = await ReelManager.uploadVideo(videoFile);
+                
+                if (!videoUrl) {
+                    showNotification('動画のアップロードに失敗しました');
+                    return;
+                }
+                
+                // リールを作成
+                const reel = {
+                    userId: user.uid,
+                    userName: userData.name,
+                    userAvatar: userData.avatar,
+                    title: caption,
+                    hashtags: hashtags,
+                    videoUrl: videoUrl,
+                    views: 0,
+                    likes: 0,
+                    comments: 0
+                };
+                
+                // リールを保存
+                const savedReel = await ReelManager.addReel(reel);
+                
+                if (savedReel) {
+                    closeReelUpload();
+                    
+                    // testPiを付与
+                    const rewardAmount = 5.0;
+                    await updatePiBalance(rewardAmount);
+                    showRewardPopup(rewardAmount);
+                    
+                    showNotification('動画がアップロードされました！');
+                    
+                    // ショートタブに切り替えて更新
+                    switchTab('reels');
+                } else {
+                    showNotification('動画の保存に失敗しました');
+                }
+            } catch (error) {
+                console.error('Error uploading reel:', error);
+                showNotification('アップロード中にエラーが発生しました');
+            }
+        }
+        
+        // ショート動画のいいね
+        async function likeReel(button, reelId) {
+            const icon = button.querySelector('i');
+            const countElement = button.nextElementSibling;
+            
+            if (icon.classList.contains('far')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                button.classList.add('active');
+                
+                const count = parseInt(countElement.textContent) + 1;
+                countElement.textContent = count;
+                
+                // リールデータを更新
+                await ReelManager.updateReel(reelId, { likes: count });
+                
+                // testPiを付与
+                const rewardAmount = 0.02;
+                await updatePiBalance(rewardAmount);
+                showRewardPopup(rewardAmount);
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                button.classList.remove('active');
+                
+                const count = parseInt(countElement.textContent) - 1;
+                countElement.textContent = count;
+                
+                // リールデータを更新
+                await ReelManager.updateReel(reelId, { likes: count });
+            }
+        }
+        
+        // ショート動画のコメント
+        function commentReel(button, reelId) {
+            showNotification('コメント機能は準備中です');
+        }
+        
+        // ショート動画のシェア
+        function shareReel(button, reelId) {
+            showNotification('シェア機能は準備中です');
+        }
+        
+        // チャット読み込み
+        async function loadChat() {
+            const chatRooms = await ChatRoomManager.getChatRooms();
+            const chatRoomsContainer = document.getElementById('chatRooms');
+            chatRoomsContainer.innerHTML = '';
+            
+            if (chatRooms.length === 0) {
+                // 初期チャットルームを追加
+                const initialRooms = [
+                    {
+                        name: '一般',
+                        description: '全般チャット',
+                        icon: 'fas fa-hashtag',
+                        createdBy: 'system'
+                    },
+                    {
+                        name: 'Pi価格',
+                        description: '価格情報交換',
+                        icon: 'fas fa-chart-line',
+                        createdBy: 'system'
+                    },
+                    {
+                        name: 'マイニング',
+                        description: 'マイニング情報',
+                        icon: 'fas fa-coins',
+                        createdBy: 'system'
+                    },
+                    {
+                        name: 'エコシステム',
+                        description: 'エコシステム情報',
+                        icon: 'fas fa-infinity',
+                        createdBy: 'system'
+                    }
+                ];
+                
+                for (const room of initialRooms) {
+                    await ChatRoomManager.addChatRoom(room);
+                }
+                
+                loadChat();
+                return;
+            }
+            
+            chatRooms.forEach(room => {
+                const roomItem = document.createElement('div');
+                roomItem.className = 'chat-room-item';
+                roomItem.onclick = () => selectChatRoom(room.id);
+                
+                const isAdmin = UserDataManager.isAdmin();
+                
+                roomItem.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                            <i class="${room.icon} text-white"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-white">${room.name}</h4>
+                            <p class="text-xs text-white/60">${room.description}</p>
+                        </div>
+                    </div>
+                    ${isAdmin ? `
+                        <div class="chat-room-admin-controls">
+                            <button class="chat-room-admin-btn" onclick="event.stopPropagation(); editChatRoom('${room.id}')" title="編集">
+                                <i class="fas fa-edit text-white"></i>
+                            </button>
+                            <button class="chat-room-admin-btn" onclick="event.stopPropagation(); deleteChatRoom('${room.id}')" title="削除">
+                                <i class="fas fa-trash text-white"></i>
+                            </button>
+                        </div>
+                    ` : ''}
+                `;
+                
+                chatRoomsContainer.appendChild(roomItem);
+            });
+            
+            // 最初のルームを選択
+            if (chatRooms.length > 0) {
+                selectChatRoom(chatRooms[0].id);
+            }
+        }
+        
+        // チャットルームを選択
+        async function selectChatRoom(roomId) {
+            currentChatRoom = roomId;
+            
+            // チャットルーム情報を更新
+            const rooms = await ChatRoomManager.getChatRooms();
+            const room = rooms.find(r => r.id === roomId);
+            
+            if (room) {
+                document.getElementById('chatRoomTitle').textContent = room.name;
+                document.getElementById('chatRoomDescription').textContent = room.description;
+            }
+            
+            // チャットルームリストのアクティブ状態を更新
+            document.querySelectorAll('.chat-room-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const activeItem = document.querySelector(`[onclick="selectChatRoom('${roomId}')"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
+            
+            // チャットメッセージを表示
+            loadChatMessages(roomId);
+        }
+        
+        // チャットメッセージを読み込み
+        async function loadChatMessages(roomId) {
+            const messages = await ChatRoomManager.getChatMessages(roomId);
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = '';
+            
+            if (messages.length === 0) {
+                // デモ用のメッセージを追加
+                const demoMessages = [
+                    {
+                        userId: 'user1',
+                        userName: '山田太郎',
+                        userAvatar: 'https://picsum.photos/seed/user1/40/40.jpg',
+                        content: 'こんにちは！LooPinへようこそ！',
+                        timestamp: new Date(Date.now() - 3600000).toISOString()
+                    },
+                    {
+                        userId: 'user2',
+                        userName: '佐藤花子',
+                        userAvatar: 'https://picsum.photos/seed/user2/40/40.jpg',
+                        content: 'testPiを獲得するには、投稿やコメントをしてみてください！',
+                        timestamp: new Date(Date.now() - 1800000).toISOString()
+                    }
+                ];
+                
+                for (const message of demoMessages) {
+                    await ChatRoomManager.addChatMessage({
+                        ...message,
+                        roomId: roomId
+                    });
+                }
+                
+                loadChatMessages(roomId);
+                return;
+            }
+            
+            messages.forEach(message => {
+                addChatMessageToUI(message);
+            });
+            
+            // メッセージコンテナを一番下にスクロール
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // チャットメッセージをUIに追加
+        function addChatMessageToUI(message) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageElement = document.createElement('div');
+            
+            const user = UserDataManager.getCurrentUser();
+            const isOwn = user && user.uid === message.userId;
+            
+            if (isOwn) {
+                messageElement.className = 'chat-message chat-message-own';
+                messageElement.innerHTML = `
+                    <div class="flex items-start gap-3 justify-end">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1 justify-end">
+                                <span class="text-xs text-white/60">${formatTime(message.timestamp)}</span>
+                                <h4 class="font-semibold text-white text-sm">${message.userName}</h4>
+                            </div>
+                            <div class="chat-message-bubble">
+                                ${message.content}
+                            </div>
+                        </div>
+                        <img src="${message.userAvatar}" alt="User" class="w-8 h-8 rounded-full">
+                    </div>
+                `;
+            } else {
+                messageElement.className = 'chat-message chat-message-other';
+                messageElement.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <img src="${message.userAvatar}" alt="User" class="w-8 h-8 rounded-full">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <h4 class="font-semibold text-white text-sm">${message.userName}</h4>
+                                <span class="text-xs text-white/60">${formatTime(message.timestamp)}</span>
+                            </div>
+                            <div class="chat-message-bubble">
+                                ${message.content}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            messagesContainer.appendChild(messageElement);
+        }
+        
+        // チャットメッセージ送信
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const content = input.value.trim();
+            
+            if (!content) {
+                return;
+            }
+            
+            const user = UserDataManager.getCurrentUser();
+            if (!user) {
+                showNotification('認証が必要です');
+                return;
+            }
+            
+            const userData = await UserDataManager.getUserData(user.uid);
+            if (!userData) {
+                showNotification('ユーザーデータの取得に失敗しました');
+                return;
+            }
+            
+            // メッセージを作成
+            const message = {
+                roomId: currentChatRoom,
+                userId: user.uid,
+                userName: userData.name,
+                userAvatar: userData.avatar,
+                content: content,
+                timestamp: new Date().toISOString()
+            };
+            
+            // メッセージを保存
+            const savedMessage = await ChatRoomManager.addChatMessage(message);
+            
+            if (savedMessage) {
+                // UIにメッセージを追加
+                addChatMessageToUI(savedMessage);
+                
+                // 入力をクリア
+                input.value = '';
+                
+                // メッセージコンテナを一番下にスクロール
+                const messagesContainer = document.getElementById('chatMessages');
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                // testPiを付与
+                const rewardAmount = 0.05;
+                await updatePiBalance(rewardAmount);
+                showRewardPopup(rewardAmount);
+            }
+        }
+        
+        // チャットルーム追加モーダル表示
+        function showAddChatRoom() {
+            if (!UserDataManager.isAdmin()) {
+                showNotification('この操作には管理者権限が必要です');
+                return;
+            }
+            
+            document.getElementById('chatRoomModalTitle').textContent = 'チャットルームを追加';
+            document.getElementById('chatRoomName').value = '';
+            document.getElementById('chatRoomDescription').value = '';
+            selectedChatRoomIcon = 'fas fa-hashtag';
+            
+            // アイコン選択をリセット
+            document.querySelectorAll('.chat-room-icon-btn').forEach(btn => {
+                btn.classList.remove('bg-white/30');
+            });
+            document.querySelector('[onclick="selectChatRoomIcon(\'fas fa-hashtag\')"]').classList.add('bg-white/30');
+            
+            document.getElementById('chatRoomModal').classList.remove('hidden');
+        }
+        
+        // チャットルーム編集
+        async function editChatRoom(roomId) {
+            if (!UserDataManager.isAdmin()) {
+                showNotification('この操作には管理者権限が必要です');
+                return;
+            }
+            
+            const rooms = await ChatRoomManager.getChatRooms();
+            const room = rooms.find(r => r.id === roomId);
+            
+            if (room) {
+                document.getElementById('chatRoomModalTitle').textContent = 'チャットルームを編集';
+                document.getElementById('chatRoomName').value = room.name;
+                document.getElementById('chatRoomDescription').value = room.description;
+                selectedChatRoomIcon = room.icon;
+                selectedChatRoomId = roomId;
+                
+                // アイコン選択を更新
+                document.querySelectorAll('.chat-room-icon-btn').forEach(btn => {
+                    btn.classList.remove('bg-white/30');
+                });
+                document.querySelector(`[onclick="selectChatRoomIcon('${room.icon}')"]`).classList.add('bg-white/30');
+                
+                document.getElementById('chatRoomModal').classList.remove('hidden');
+            }
+        }
+        
+        // チャットルーム削除
+        async function deleteChatRoom(roomId) {
+            if (!UserDataManager.isAdmin()) {
+                showNotification('この操作には管理者権限が必要です');
+                return;
+            }
+            
+            if (confirm('本当にこのチャットルームを削除しますか？')) {
+                const success = await ChatRoomManager.deleteChatRoom(roomId);
+                if (success) {
+                    showNotification('チャットルームを削除しました');
+                    loadChat();
+                } else {
+                    showNotification('削除に失敗しました');
+                }
+            }
+        }
+        
+        // チャットルームアイコン選択
+        let selectedChatRoomIcon = 'fas fa-hashtag';
+        let selectedChatRoomId = null;
+        
+        function selectChatRoomIcon(icon) {
+            selectedChatRoomIcon = icon;
+            
+            // 選択状態を更新
+            document.querySelectorAll('.chat-room-icon-btn').forEach(btn => {
+                btn.classList.remove('bg-white/30');
+            });
+            event.target.closest('.chat-room-icon-btn').classList.add('bg-white/30');
+        }
+        
+        // チャットルームモーダルを閉じる
+        function closeChatRoomModal() {
+            document.getElementById('chatRoomModal').classList.add('hidden');
+            selectedChatRoomId = null;
+        }
+        
+        // チャットルーム保存
+        async function saveChatRoom() {
+            const name = document.getElementById('chatRoomName').value.trim();
+            const description = document.getElementById('chatRoomDescription').value.trim();
+            
+            if (!name) {
+                showNotification('ルーム名を入力してください');
+                return;
+            }
+            
+            if (!description) {
+                showNotification('説明を入力してください');
+                return;
+            }
+            
+            const user = UserDataManager.getCurrentUser();
+            if (!user) {
+                showNotification('認証が必要です');
+                return;
+            }
+            
+            if (selectedChatRoomId) {
+                // 編集
+                const success = await ChatRoomManager.updateChatRoom(selectedChatRoomId, {
+                    name: name,
+                    description: description,
+                    icon: selectedChatRoomIcon
+                });
+                
+                if (success) {
+                    showNotification('チャットルームを更新しました');
+                } else {
+                    showNotification('更新に失敗しました');
+                }
+            } else {
+                // 新規追加
+                const newRoom = {
+                    name: name,
+                    description: description,
+                    icon: selectedChatRoomIcon,
+                    createdBy: user.uid
+                };
+                
+                const savedRoom = await ChatRoomManager.addChatRoom(newRoom);
+                if (savedRoom) {
+                    showNotification('チャットルームを追加しました');
+                } else {
+                    showNotification('追加に失敗しました');
+                }
+            }
+            
+            closeChatRoomModal();
+            loadChat();
+        }
+        
+        // プロフィール表示
+        async function showProfile() {
+            const modal = document.getElementById('profileModal');
+            const user = UserDataManager.getCurrentUser();
+            
+            if (!user) {
+                showNotification('認証が必要です');
+                return;
+            }
+            
+            const userData = await UserDataManager.getUserData(user.uid);
+            if (!userData) {
+                showNotification('ユーザーデータの取得に失敗しました');
+                return;
+            }
+            
+            // プロフィール情報を更新
+            document.getElementById('profileAvatar').src = userData.avatar;
+            document.getElementById('profileName').textContent = userData.name;
+            document.getElementById('profileUsername').textContent = `@${userData.username}`;
+            document.getElementById('profileBio').textContent = userData.bio || '自己紹介文がありません';
+            
+            // 統計情報を更新
+            document.getElementById('profilePostsCount').textContent = userData.postsCount || 0;
+            
+            const following = await UserDataManager.getFollowing(user.uid);
+            const followers = await UserDataManager.getFollowers(user.uid);
+            
+            document.getElementById('profileFollowingCount').textContent = following.length;
+            document.getElementById('profileFollowersCount').textContent = followers.length;
+            
+            // testPi残高を表示
+            document.getElementById('profileTotalPi').textContent = (userData.piBalance || 0).toFixed(2);
+            
+            // プロフィールタブを表示
+            switchProfileTab('posts');
+            
+            modal.classList.remove('hidden');
+        }
+        
+        // プロフィールを閉じる
+        function closeProfile() {
+            document.getElementById('profileModal').classList.add('hidden');
+        }
+        
+        // プロフィール編集表示
+        async function showProfileEdit() {
+            const modal = document.getElementById('profileEditModal');
+            const user = UserDataManager.getCurrentUser();
+            
+            if (!user) {
+                showNotification('認証が必要です');
+                return;
+            }
+            
+            const userData = await UserDataManager.getUserData(user.uid);
+            if (!userData) {
+                showNotification('ユーザーデータの取得に失敗しました');
+                return;
+            }
+            
+            // 現在のプロフィール情報を設定
+            document.getElementById('editProfileAvatar').src = userData.avatar;
+            document.getElementById('editName').value = userData.name;
+            document.getElementById('editUsername').value = userData.username;
+            document.getElementById('editBio').value = userData.bio || '';
+            
+            modal.classList.remove('hidden');
+        }
+        
+        // プロフィール編集を閉じる
+        function closeProfileEdit() {
+            document.getElementById('profileEditModal').classList.add('hidden');
+        }
+        
+        // アバター画像プレビュー
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('editProfileAvatar').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        // プロフィール編集保存
+        async function saveProfileEdit() {
+            const user = UserDataManager.getCurrentUser();
+            if (!user) {
+                showNotification('認証が必要です');
+                return;
+            }
+            
+            const name = document.getElementById('editName').value.trim();
+            const username = document.getElementById('editUsername').value.trim();
+            const bio = document.getElementById('editBio').value.trim();
+            const avatarFile = document.getElementById('avatarUpload').files[0];
+            
+            if (!name) {
+                showNotification('名前を入力してください');
+                return;
+            }
+            
+            if (!username) {
+                showNotification('ユーザー名を入力してください');
+                return;
+            }
+            
+            let avatarUrl = null;
+            
+            // アバター画像がアップロードされた場合
+            if (avatarFile) {
+                try {
+                    const fileName = `${user.uid}_avatar_${Date.now()}`;
+                    const storageRef = storage.ref(`avatars/${fileName}`);
+                    const snapshot = await storageRef.put(avatarFile);
+                    avatarUrl = await snapshot.ref.getDownloadURL();
+                } catch (error) {
+                    console.error('Error uploading avatar:', error);
+                    showNotification('アバターのアップロードに失敗しました');
+                    return;
+                }
+            }
+            
+            // ユーザーデータを更新
+            const updates = {
+                name: name,
+                username: username,
+                bio: bio
+            };
+            
+            if (avatarUrl) {
+                updates.avatar = avatarUrl;
+            }
+            
+            const success = await UserDataManager.updateUserData(user.uid, updates);
+            
+            if (success) {
+                // UIを更新
+                const updatedUserData = await UserDataManager.getUserData(user.uid);
+                updateUserInfo(updatedUserData);
+                showProfile();
+                
+                showNotification('プロフィールを更新しました');
+            } else {
+                showNotification('プロフィールの更新に失敗しました');
+            }
+            
+            closeProfileEdit();
+        }
+        
+        // プロフィールタブ切り替え
+        async function switchProfileTab(tabName) {
+            // すべてのプロフィールタブからアクティブクラスを削除
+            document.querySelectorAll('.profile-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 選択したタブにアクティブクラスを追加
+            const activeTab = document.querySelector(`[data-profile-tab="${tabName}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+            
+            // プロフィールコンテンツを更新
+            const profileContent = document.getElementById('profileContent');
+            profileContent.innerHTML = '';
+            
+            const user = UserDataManager.getCurrentUser();
+            if (!user) {
+                return;
+            }
+            
+            const userData = await UserDataManager.getUserData(user.uid);
+            if (!userData) {
+                return;
+            }
+            
+            if (tabName === 'posts') {
+                // 投稿タブ
+                const posts = await PostManager.getPosts();
+                const userPosts = posts.filter(post => post.userId === user.uid);
+                
+                if (userPosts.length === 0) {
+                    profileContent.innerHTML = `
+                        <div class="glass-effect rounded-2xl p-8 text-center">
+                            <p class="text-white/70">まだ投稿がありません</p>
+                        </div>
+                    `;
+                } else {
+                    userPosts.forEach(post => {
+                        const postElement = document.createElement('div');
+                        postElement.className = 'glass-effect rounded-2xl p-4';
+                        
+                        const timeAgo = getTimeAgo(post.createdAt);
+                        
+                        postElement.innerHTML = `
+                            <div class="flex items-start gap-3">
+                                <img src="${post.userAvatar}" alt="User" class="w-10 h-10 rounded-full">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <h4 class="font-semibold text-white">${post.userName}</h4>
+                                        <span class="text-xs text-white/60">${timeAgo}</span>
+                                    </div>
+                                    <p class="text-white/90">${post.content}</p>
+                                </div>
+                            </div>
+                        `;
+                        
+                        profileContent.appendChild(postElement);
+                    });
+                }
+            } else if (tabName === 'following') {
+                // フォロータブ
+                const following = await UserDataManager.getFollowing(user.uid);
+                
+                if (following.length === 0) {
+                    profileContent.innerHTML = `
+                        <div class="glass-effect rounded-2xl p-8 text-center">
+                            <p class="text-white/70">フォローしているユーザーがいません</p>
+                        </div>
+                    `;
+                } else {
+                    for (const userId of following) {
+                        const userCard = await createUserCard(userId);
+                        profileContent.appendChild(userCard);
+                    }
+                }
+            } else if (tabName === 'followers') {
+                // フォロワータブ
+                const followers = await UserDataManager.getFollowers(user.uid);
+                
+                if (followers.length === 0) {
+                    profileContent.innerHTML = `
+                        <div class="glass-effect rounded-2xl p-8 text-center">
+                            <p class="text-white/70">フォロワーがいません</p>
+                        </div>
+                    `;
+                } else {
+                    for (const userId of followers) {
+                        const userCard = await createUserCard(userId);
+                        profileContent.appendChild(userCard);
+                    }
+                }
+            }
+        }
+        
+        // ユーザーカードを作成
+        async function createUserCard(userId) {
+            const userCard = document.createElement('div');
+            userCard.className = 'user-card';
+            
+            // ユーザー情報を取得
+            const userData = await UserDataManager.getUserData(userId);
+            
+            if (!userData) {
+                userCard.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <img src="https://picsum.photos/seed/${userId}/50/50.jpg" alt="User" class="w-12 h-12 rounded-full">
+                        <div class="user-card-info">
+                            <h4>ユーザー${userId}</h4>
+                            <p>@user${userId}</p>
+                        </div>
+                    </div>
+                `;
+                return userCard;
+            }
+            
+            const currentUser = UserDataManager.getCurrentUser();
+            const isFollowing = currentUser && await UserDataManager.isFollowing(currentUser.uid, userId);
+            const isOwnUser = currentUser && currentUser.uid === userId;
+            
+            userCard.innerHTML = `
+                <img src="${userData.avatar}" alt="${userData.name}">
+                <div class="user-card-info">
+                    <h4>${userData.name}</h4>
+                    <p>@${userData.username}</p>
+                </div>
+                ${!isOwnUser ? `
+                    <button class="follow-btn ${isFollowing ? 'following' : 'not-following'}" 
+                            onclick="toggleFollow('${userId}')">
+                        ${isFollowing ? 'フォロー中' : 'フォロー'}
+                    </button>
+                ` : ''}
+            `;
+            
+            return userCard;
+        }
+        
+        // フォロー/フォロー解除切り替え
+        async function toggleFollow(targetUserId) {
+            const currentUser = UserDataManager.getCurrentUser();
+            if (!currentUser) {
+                showNotification('認証が必要です');
+                return;
+            }
+            
+            const isFollowing = await UserDataManager.isFollowing(currentUser.uid, targetUserId);
+            
+            if (isFollowing) {
+                // フォロー解除
+                const success = await UserDataManager.removeFollowing(currentUser.uid, targetUserId);
+                if (success) {
+                    // UIを更新
+                    const button = event.target;
+                    button.textContent = 'フォロー';
+                    button.classList.remove('following');
+                    button.classList.add('not-following');
+                    
+                    showNotification('フォローを解除しました');
+                }
+            } else {
+                // フォロー
+                const success = await UserDataManager.addFollowing(currentUser.uid, targetUserId);
+                if (success) {
+                    // UIを更新
+                    const button = event.target;
+                    button.textContent = 'フォロー中';
+                    button.classList.remove('not-following');
+                    button.classList.add('following');
+                    
+                    showNotification('フォローしました');
+                }
+            }
+            
+            // プロフィール画面を更新
+            showProfile();
+        }
+        
+        // ユーザーリスト表示
+        async function showUserList(type) {
+            const modal = document.getElementById('userListModal');
+            const userListContainer = document.getElementById('userList');
+            const currentUser = UserDataManager.getCurrentUser();
+            
+            if (!currentUser) {
+                showNotification('認証が必要です');
+                return;
+            }
+            
+            let users = [];
+            let title = '';
+            
+            if (type === 'following') {
+                users = await UserDataManager.getFollowing(currentUser.uid);
+                title = 'フォロー中';
+            } else if (type === 'followers') {
+                users = await UserDataManager.getFollowers(currentUser.uid);
+                title = 'フォロワー';
+            }
+            
+            document.getElementById('userListTitle').textContent = title;
+            userListContainer.innerHTML = '';
+            
+            if (users.length === 0) {
+                userListContainer.innerHTML = `
+                    <div class="glass-effect rounded-2xl p-8 text-center">
+                        <p class="text-white/70">${title}がいません</p>
+                    </div>
+                `;
+            } else {
+                for (const userId of users) {
+                    const userCard = await createUserCard(userId);
+                    userListContainer.appendChild(userCard);
+                }
+            }
+            
+            modal.classList.remove('hidden');
+        }
+        
+        // ユーザーリストを閉じる
+        function closeUserList() {
+            document.getElementById('userListModal').classList.add('hidden');
+        }
+        
+        // トピックルームを開く
+        function openTopicRoom(topicId) {
+            const modal = document.getElementById('topicRoomModal');
+            
+            // トピックルーム情報を設定
+            const topicNames = {
+                'pi-price': 'Pi価格',
+                'mining': 'マイニング',
+                'ecosystem': 'エコシステム',
+                'future': '未来予測',
+                'market': '市場分析',
+                'ideas': 'アイデア交換'
+            };
+            
+            document.getElementById('topicRoomTitle').textContent = topicNames[topicId] || 'トピックルーム';
+            
+            modal.classList.remove('hidden');
+        }
+        
+        // トピックルームを閉じる
+        function closeTopicRoom() {
+            document.getElementById('topicRoomModal').classList.add('hidden');
+        }
+        
+        // トピックに投稿
+        async function postToTopic() {
+            const input = document.getElementById('topicRoomInput');
+            const content = input.value.trim();
+            
+            if (!content) {
+                showNotification('投稿内容を入力してください');
+                return;
+            }
+            
+            const user = UserDataManager.getCurrentUser();
+            if (!user) {
+                showNotification('認証が必要です');
+                return;
+            }
+            
+            const userData = await UserDataManager.getUserData(user.uid);
+            if (!userData) {
+                showNotification('ユーザーデータの取得に失敗しました');
+                return;
+            }
+            
+            // 投稿を作成
+            const post = {
+                userId: user.uid,
+                userName: userData.name,
+                userAvatar: userData.avatar,
+                content: content,
+                timestamp: new Date().toISOString()
+            };
+            
+            // UIに投稿を追加
+            addTopicPostToUI(post);
+            
+            // 入力をクリア
+            input.value = '';
+            
+            // testPiを付与
+            const rewardAmount = 0.2;
+            await updatePiBalance(rewardAmount);
+            showRewardPopup(rewardAmount);
+            
+            showNotification('投稿が完了しました');
+        }
+        
+        // トピック投稿をUIに追加
+        function addTopicPostToUI(post) {
+            const postsContainer = document.getElementById('topicRoomPosts');
+            const postElement = document.createElement('div');
+            postElement.className = 'glass-effect rounded-2xl p-4';
+            
+            const timeAgo = getTimeAgo(new Date(post.timestamp));
+            
+            postElement.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <img src="${post.userAvatar}" alt="User" class="w-10 h-10 rounded-full">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold text-white">${post.userName}</h4>
+                            <span class="text-xs text-white/60">${timeAgo}</span>
+                        </div>
+                        <p class="text-white/90">${post.content}</p>
+                    </div>
+                </div>
+            `;
+            
+            postsContainer.insertBefore(postElement, postsContainer.firstChild);
+        }
+        
+        // フィード読み込み
+        async function loadFeed() {
+            const posts = await PostManager.getPosts();
+            const feedContainer = document.getElementById('feed');
+            
+            // 既存のフィードをクリア（デモ投稿以外）
+            const demoPosts = feedContainer.querySelectorAll('.post-card');
+            demoPosts.forEach(post => post.remove());
+            
+            if (posts.length === 0) {
+                // デモ用の投稿を表示
+                return;
+            }
+            
+            posts.forEach(post => {
+                addPostToUI(post);
+            });
+        }
+        
+        // トピック読み込み
+        function loadTopics() {
+            // トピックは静的なので何もしない
+        }
+        
+        // 初期データ読み込み
+        function loadInitialData() {
+            // ニュースを読み込む
+            loadNews();
+            
+            // チャットを読み込む
+            loadChat();
+            
+            // フィードを読み込む
+            loadFeed();
+        }
+        
+        // 言語切り替え
+        function toggleLangSelector() {
+            document.getElementById('langOverlay').classList.remove('hidden');
+        }
+        
+        // 検索機能
+        function searchNews() {
+            const searchTerm = document.getElementById('newsSearch').value.trim();
+            if (!searchTerm) {
+                showNotification('検索キーワードを入力してください');
+                return;
+            }
+            
+            showNotification(`「${searchTerm}」で検索しました`);
+            // 実際の検索処理を実装
+        }
+        
+        // ニュースフィルター
+        function filterNews(category) {
+            showNotification(`${getCategoryName(category)}でフィルターしました`);
+            // 実際のフィルター処理を実装
+        }
+        
+        // ソースフィルター
+        function filterBySource(source) {
+            showNotification(`${source}でフィルターしました`);
+            // 実際のフィルター処理を実装
+        }
+        
+        // ユーティリティ関数
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+        
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            let interval = Math.floor(seconds / 31536000);
+            if (interval >= 1) {
+                return interval + "年前";
+            }
+            
+            interval = Math.floor(seconds / 2592000);
+            if (interval >= 1) {
+                return interval + "ヶ月前";
+            }
+            
+            interval = Math.floor(seconds / 86400);
+            if (interval >= 1) {
+                return interval + "日前";
+            }
+            
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) {
+                return interval + "時間前";
+            }
+            
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) {
+                return interval + "分前";
+            }
+            
+            return "たった今";
+        }
+        
+        function formatTime(date) {
+            return new Date(date).toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        function getCategoryName(category) {
+            const categories = {
+                'update': 'アップデート',
+                'price': '価格',
+                'partnership': '提携',
+                'community': 'コミュニティ'
+            };
+            return categories[category] || 'その他';
+        }
+        
+        function getCredibilityColor(score) {
+            if (score >= 80) {
+                return 'text-green-400';
+            } else if (score >= 50) {
+                return 'text-yellow-400';
+            } else {
+                return 'text-red-400';
+            }
+        }
+        
+        function showNotification(message) {
+            // 簡易的な通知表示
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-20 right-4 glass-effect rounded-2xl px-4 py-3 text-white z-50';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.5s';
+                notification.style.opacity = '0';
+                
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+        
+        // ページ読み込み時の処理
+        document.addEventListener('DOMContentLoaded', () => {
+            // 言語選択UIを初期化
+            const langContainer = document.querySelector('#langOverlay .grid');
+            langContainer.innerHTML = '';
+            
+            languages.forEach(lang => {
+                const button = document.createElement('button');
+                button.className = 'glass-effect rounded-xl p-3 text-white hover:bg-white/20 smooth-transition';
+                button.innerHTML = `${lang.flag} ${lang.name}`;
+                button.onclick = () => selectLanguage(lang.code);
+                langContainer.appendChild(button);
+            });
+            
+            // ドラッグ＆ドロップ機能
+            const videoDropZone = document.getElementById('videoDropZone');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                videoDropZone.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                videoDropZone.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                videoDropZone.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                videoDropZone.classList.add('bg-white/10');
+            }
+            
+            function unhighlight() {
+                videoDropZone.classList.remove('bg-white/10');
+            }
+            
+            videoDropZone.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    document.getElementById('videoUpload').files = files;
+                    handleVideoUpload({ target: { files: files } });
+                }
+            }
+        });
+        
+        // UI更新関数
+        function updateUILanguage(langCode) {
+            // 言語に応じたUI更新を実装
+            console.log(`Language updated to: ${langCode}`);
+        }
+    </script>
 </body>
 </html>
