@@ -2040,77 +2040,73 @@
             }
         }
         
-        // Pi認証
-        async function authenticatePi() {
-            if (!window.Pi) {
-                showNotification('Pi SDKが読み込まれていません');
-                return;
-            }
-            
-            try {
-                document.getElementById('authContent').classList.add('hidden');
-                document.getElementById('authLoading').classList.remove('hidden');
-                
-                // Pi SDKで認証
-                const authResult = await window.Pi.authenticate(['username', 'payments'], {
-                    onIncompletePaymentFound: (payment) => {
-                        console.log('Incomplete payment found:', payment);
-                    }
-                });
-                
-                // Firebase認証
-               const response = await fetch('/api/pi-auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        uid: authResult.user.uid,        // Pi ウォレット UID
-        username: authResult.user.username
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error('Token API failed');
+     // Pi認証
+async function authenticatePi() {
+    if (!window.Pi) {
+        showNotification('Pi SDKが読み込まれていません');
+        return;
     }
 
-    const { token } = await response.json();
+    try {
+        // ローディング表示
+        document.getElementById('authContent').classList.add('hidden');
+        document.getElementById('authLoading').classList.remove('hidden');
 
-    // ③ 受け取ったカスタムトークンで Firebase にサインイン
-    await auth.signInWithCustomToken(token);
-                
-                // ユーザーデータを取得または作成
-                let userData = await UserDataManager.getUserData(firebaseAuth.user.uid);
-                if (!userData) {
-                    userData = {
-                        uid: firebaseAuth.user.uid,
-                        username: authResult.user.username,
-                        name: authResult.user.username,
-                        bio: '',
-                        avatar: `https://picsum.photos/seed/${firebaseAuth.user.uid}/120/120.jpg`,
-                        piBalance: 0,
-                        postsCount: 0,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    };
-                    
-                    await UserDataManager.createUser(firebaseAuth.user.uid, userData);
-                }
-                
-                // メイン画面を表示
-                document.getElementById('authOverlay').classList.add('hidden');
-                document.getElementById('mainContainer').classList.remove('hidden');
-                
-                // ユーザー情報をUIに反映
-                updateUserInfo(userData);
-                
-                // 初期データを読み込む
-                loadInitialData();
-                
-            } catch (error) {
-                console.error('Pi authentication failed:', error);
-                document.getElementById('authContent').classList.remove('hidden');
-                document.getElementById('authLoading').classList.add('hidden');
-                showNotification('認証に失敗しました');
+        // Pi SDKで認証
+        const authResult = await window.Pi.authenticate(['username', 'payments'], {
+            onIncompletePaymentFound: (payment) => {
+                console.log('Incomplete payment found:', payment);
             }
+        });
+
+        // サーバーレス関数にPiのUIDのみ送信してカスタムトークン取得
+        const response = await fetch('/api/pi-auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                uid: authResult.user.uid       // PiウォレットのUIDのみ送る
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Token API failed');
         }
+        const { token } = await response.json();
+
+        // カスタムトークンでFirebaseにサインイン
+        await auth.signInWithCustomToken(token);
+        const user = auth.currentUser; // サインイン後のユーザーを取得
+
+        // Firestoreからユーザーデータを取得、なければ作成
+        let userData = await UserDataManager.getUserData(user.uid);
+        if (!userData) {
+            userData = {
+                uid: user.uid,
+                username: authResult.user.username,
+                name: authResult.user.username,
+                bio: '',
+                avatar: `https://picsum.photos/seed/${user.uid}/120/120.jpg`,
+                piBalance: 0,
+                postsCount: 0,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            await UserDataManager.createUser(user.uid, userData);
+        }
+
+        // UIを更新
+        document.getElementById('authOverlay').classList.add('hidden');
+        document.getElementById('mainContainer').classList.remove('hidden');
+        updateUserInfo(userData);
+        loadInitialData();
+    } catch (error) {
+        console.error('Pi authentication failed:', error);
+        document.getElementById('authContent').classList.remove('hidden');
+        document.getElementById('authLoading').classList.add('hidden');
+        showNotification('認証に失敗しました');
+    }
+}
+
+      
         
         // Firebase認証状態の監視
         auth.onAuthStateChanged(async (user) => {
