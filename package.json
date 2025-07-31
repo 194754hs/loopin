@@ -1,0 +1,9 @@
+{
+  "name": "loopin-backend",
+  "version": "1.0.0",
+  "description": "Backend functions for Loopin Pi authentication",
+  "type": "module",
+  "dependencies": {
+    "firebase-admin": "^11.10.0"
+  }
+}
