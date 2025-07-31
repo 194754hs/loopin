@@ -2059,7 +2059,23 @@
                 });
                 
                 // Firebase認証
-                const firebaseAuth = await auth.signInWithCustomToken(authResult.user.uid);
+               const response = await fetch('/api/pi-auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        uid: authResult.user.uid,        // Pi ウォレット UID
+        username: authResult.user.username
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Token API failed');
+    }
+
+    const { token } = await response.json();
+
+    // ③ 受け取ったカスタムトークンで Firebase にサインイン
+    await auth.signInWithCustomToken(token);
                 
                 // ユーザーデータを取得または作成
                 let userData = await UserDataManager.getUserData(firebaseAuth.user.uid);
