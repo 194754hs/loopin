@@ -1601,25 +1601,26 @@
         </div>
     </div>
     
-    <!-- アプリケーションコア -->
-    <script>
-        // Firebase設定
-        const firebaseConfig = {
-            apiKey: "AIzaSyB4k1kX9rYrV8jX8Z8Z8Z8Z8Z8Z8Z8Z8Z8",
-            authDomain: "loopin-app.firebaseapp.com",
-            projectId: "loopin-app",
-            storageBucket: "loopin-app.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef123456"
-        };
+<!-- アプリケーションコア -->
+<script>
+    // Firebase設定（loopin-7e965）
+    const firebaseConfig = {
+        apiKey: "AIzaSyAe1iHIechue5XHtZl0FitoWqn3n_XSzT4",
+        authDomain: "loopin-7e965.firebaseapp.com",
+        projectId: "loopin-7e965",
+        storageBucket: "loopin-7e965.firebasestorage.app",
+        messagingSenderId: "165346335944",
+        appId: "1:165346335944:web:081a4a13e2d9a7df9919fd",
+        measurementId: "G-835HLBSPYB"
+    };
 
-        // Firebase初期化
-        firebase.initializeApp(firebaseConfig);
-        
-        // Firebaseサービスの取得
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+    // Firebase初期化
+    firebase.initializeApp(firebaseConfig);
+    
+    // Firebaseサービスの取得
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
         
         // コレクション参照
         const usersCollection = db.collection('users');
@@ -2111,32 +2112,36 @@
             }
         });
         
-        // ユーザー情報更新
-        function updateUserInfo(userData) {
-            document.getElementById('userAvatar').src = userData.avatar;
-            updatePiBalance(userData.piBalance || 0);
+  // ユーザー情報更新
+    function updateUserInfo(userData) {
+        document.getElementById('userAvatar').src = userData.avatar;
+        updatePiBalance(userData.piBalance || 0);
+    }
+
+    // testPi残高更新：Firestoreに保存されている残高をベースに加算するよう修正
+    async function updatePiBalance(amount) {
+        const user = UserDataManager.getCurrentUser();
+        if (user) {
+            // Firestore からユーザーデータを取得
+            const userData = await UserDataManager.getUserData(user.uid);
+            const currentBalance = userData?.piBalance || 0;
+            const newBalance = currentBalance + amount;
+
+            await UserDataManager.updateUserData(user.uid, { piBalance: newBalance });
+            
+            const balanceElement = document.getElementById('piBalance');
+            balanceElement.textContent = newBalance.toFixed(2);
+            
+            // アニメーション効果
+            balanceElement.style.transform = 'scale(1.2)';
+            balanceElement.style.color = '#FFE66D';
+            
+            setTimeout(() => {
+                balanceElement.style.transform = 'scale(1)';
+                balanceElement.style.color = '';
+            }, 500);
         }
-        
-        // testPi残高更新
-        async function updatePiBalance(amount) {
-            const user = UserDataManager.getCurrentUser();
-            if (user) {
-                const newBalance = (user.piBalance || 0) + amount;
-                await UserDataManager.updateUserData(user.uid, { piBalance: newBalance });
-                
-                const balanceElement = document.getElementById('piBalance');
-                balanceElement.textContent = newBalance.toFixed(2);
-                
-                // アニメーション効果
-                balanceElement.style.transform = 'scale(1.2)';
-                balanceElement.style.color = '#FFE66D';
-                
-                setTimeout(() => {
-                    balanceElement.style.transform = 'scale(1)';
-                    balanceElement.style.color = '';
-                }, 500);
-            }
-        }
+    }
         
         // testPi獲得ポップアップ表示
         function showRewardPopup(amount) {
