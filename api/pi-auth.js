@@ -1,25 +1,7 @@
-/*
- * Vercel Serverless Function: PI authentication to Firebase custom token
- *
- * This function receives a POST request with a Pi user's `uid` in the body.
- * It uses Firebase Admin SDK to generate a custom token for that UID and
- * returns the token as JSON. You must set the following environment
- * variables in your Vercel project:
- *
- *   - FIREBASE_PROJECT_ID
- *   - FIREBASE_CLIENT_EMAIL
- *   - FIREBASE_PRIVATE_KEY (replace newlines with \n)
- *
- * These values come from your Firebase service account JSON. Do not commit
- * the private key to your repository. Configure them in the Vercel dashboard
- * under Project Settings → Environment Variables.
- */
-
-const { initializeApp, cert, applicationDefault } = require('firebase-admin/app');
+const { initializeApp, cert } = require('firebase-admin/app');
 const { getAuth } = require('firebase-admin/auth');
 
 let firebaseInitialized = false;
-
 function initFirebase() {
   if (!firebaseInitialized) {
     const projectId = process.env.FIREBASE_PROJECT_ID;
@@ -28,14 +10,9 @@ function initFirebase() {
     if (!projectId || !clientEmail || !privateKey) {
       throw new Error('Firebase environment variables are not set');
     }
-    // Replace escaped newlines with actual newlines
     privateKey = privateKey.replace(/\\n/g, '\n');
     initializeApp({
-      credential: cert({
-        projectId,
-        clientEmail,
-        privateKey,
-      }),
+      credential: cert({ projectId, clientEmail, privateKey }),
     });
     firebaseInitialized = true;
   }
@@ -46,15 +23,38 @@ module.exports = async (req, res) => {
     res.status(405).json({ error: 'Method not allowed' });
     return;
   }
-
   try {
     initFirebase();
   } catch (err) {
     res.status(500).json({ error: err.message });
     return;
   }
-
-  const { uid } = req.body || {};
+  // リクエストボディを手動で取得
+  let rawBody = '';
+  try {
+    rawBody = await new Promise((resolve, reject) => {
+      let data = '';
+      req.on('data', chunk => {
+        data += chunk;
+      });
+      req.on('end', () => resolve(data));
+      req.on('error', reject);
+    });
+  } catch {
+    res.status(400).json({ error: 'Failed to read request body' });
+    return;
+  }
+  // JSONパースと UID 抽出
+  let uid;
+  if (rawBody) {
+    try {
+      const parsed = JSON.parse(rawBody);
+      uid = parsed && parsed.uid;
+    } catch {
+      res.status(400).json({ error: 'Invalid JSON in request body' });
+      return;
+    }
+  }
   if (!uid) {
     res.status(400).json({ error: 'UID is required' });
     return;
